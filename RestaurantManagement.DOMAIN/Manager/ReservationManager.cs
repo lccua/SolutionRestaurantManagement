@@ -19,9 +19,10 @@ namespace RestaurantManagement.DOMAIN.Manager
 
         public async Task AddReservationAsync(Reservation reservation)
         {
-            List<Table> availableTables = await _reservationRepository.GetAvailableTables(reservation.Date, reservation.Hour, reservation.Restaurant.RestaurantId);
+            List<Table> availableTables = await _reservationRepository.GetAvailableTables(reservation.Date, reservation.StartHour, reservation.RestaurantId);
 
             Table SelectedTable = SelectTable(availableTables, reservation.AmountOfSeats);
+            reservation.TableNumber = SelectedTable.TableNumber;
 
 
             await _reservationRepository.AddReservationAsync(reservation);

@@ -18,8 +18,11 @@ namespace RestaurantManagement.DOMAIN.Model
         private DateTime _date;
         public DateTime Date { get { return _date; } set { ValidateDate(value); _date = value; } }
 
-        private TimeSpan _hour;
-        public TimeSpan Hour { get { return _hour; } set { ValidateHour(value); _hour = value; } }
+        private TimeSpan _startHour;
+        public TimeSpan StartHour { get { return _startHour; } set { ValidateHour(value); _startHour = value; CalculateEndHour(); } }
+
+        private TimeSpan _endHour;
+        public TimeSpan EndHour { get { return _endHour; } set { ValidateHour(value); _endHour = value;}}
 
         private int _tableNumber;
         public int TableNumber { get { return _tableNumber; } set { ValidateTableNumber(value); _tableNumber = value; } }
@@ -53,13 +56,7 @@ namespace RestaurantManagement.DOMAIN.Model
             }
         }
 
-        private void ValidateDate(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ReservationException("Date cannot be null or empty");
-            }
-        }
+       
 
         private void ValidateDate(DateTime value)
         {
@@ -99,6 +96,11 @@ namespace RestaurantManagement.DOMAIN.Model
             {
                 throw new ReservationException("Invalid RestaurantId");
             }
+        }
+
+        private void CalculateEndHour()
+        {
+            _endHour = StartHour.Add(TimeSpan.FromHours(1.5));
         }
     }
 }

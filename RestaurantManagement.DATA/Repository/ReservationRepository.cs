@@ -34,12 +34,13 @@ namespace RestaurantManagement.DATA.Repository
                         // Associate the command with the transaction
                         command.Transaction = transaction;
 
-                        command.CommandText = "INSERT INTO Reservation (AmountOfSeats, Date, Hour, TableNumber, CustomerNumber, RestaurantId) VALUES (@AmountOfSeats, @Date, @Hour, @TableNumber, @CustomerNumber, @RestaurantId)";
+                        command.CommandText = "INSERT INTO Reservation (AmountOfSeats, Date, StartHour, EndHour, TableNumber, CustomerNumber, RestaurantId) VALUES (@AmountOfSeats, @Date, @StartHour, @EndHour, @TableNumber, @CustomerNumber, @RestaurantId)";
 
                         // Add parameters
                         command.Parameters.AddWithValue("@AmountOfSeats", reservation.AmountOfSeats);
                         command.Parameters.AddWithValue("@Date", reservation.Date);
-                        command.Parameters.AddWithValue("@Hour", reservation.Hour);
+                        command.Parameters.AddWithValue("@StartHour", reservation.StartHour);
+                        command.Parameters.AddWithValue("@EndHour", reservation.EndHour);
                         command.Parameters.AddWithValue("@RestaurantId", reservation.RestaurantId);
                         command.Parameters.AddWithValue("@TableNumber", reservation.TableNumber);
                         command.Parameters.AddWithValue("@CustomerNumber", reservation.CustomerNumber);

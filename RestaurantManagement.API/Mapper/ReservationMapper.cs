@@ -9,10 +9,14 @@ namespace RestaurantManagement.API.Mapper
         {
             try
             {
+               
+                DateTime reservationDate = DateTime.Parse(reservationDTO.ReservationDate);
+                TimeSpan reservationHour = TimeSpan.Parse(reservationDTO.ReservationHour);
+
                 return new Reservation
                 {
-                    Date = reservationDTO.ReservationDate,
-                    Hour = reservationDTO.ReservationHour,
+                    Date = reservationDate,
+                    StartHour = reservationHour,
                     AmountOfSeats = reservationDTO.AmountOffSeats,
                     CustomerNumber = reservationDTO.CustomerNumber,
                     RestaurantId = reservationDTO.RestaurantNumber,
@@ -30,12 +34,11 @@ namespace RestaurantManagement.API.Mapper
             {
                 return new ReservationDTO
                 {
-                    ReservationDate = reservation.Date,
-                    ReservationHour = reservation.Hour,
+                    ReservationDate = reservation.Date.ToString("yyyy-MM-dd"),
+                    ReservationHour = reservation.StartHour.ToString(@"hh\:mm\"),
                     AmountOffSeats = reservation.AmountOfSeats,
                     CustomerNumber = reservation.CustomerNumber,
                     RestaurantNumber = reservation.RestaurantId,
-                    TableNumber = reservation.TableNumber,
                 };
             }
             catch (Exception ex)
