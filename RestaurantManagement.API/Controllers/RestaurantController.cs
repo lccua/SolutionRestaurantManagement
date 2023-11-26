@@ -7,20 +7,20 @@ namespace RestaurantManagement.API.Controllers
     [ApiController]
     public class RestaurantController : ControllerBase
     {
-        /* [HttpGet]
-         [Route("Get")]
-         public async Task<ActionResult> GetRestaurant(int postalCode, int cuisineId)
-         {
+      /*  [HttpGet]
+        [Route("Get")]
+        public async Task<ActionResult> GetRestaurant(int postalCode, int cuisineId)
+        {
 
-         }
+        }
 
-         [HttpGet]
-         [Route("GetFilteredRestaurants")]
-         public async Task<ActionResult> GetRestaurants(DateOnly reservationDate, LocationDTO locationInputDTO, int cuisineId, int amountOfSeats)
-         {
+        [HttpGet]
+        [Route("GetFilteredRestaurants")]
+        public async Task<ActionResult> GetRestaurants(DateOnly reservationDate, LocationDTO locationInputDTO, int cuisineId, int amountOfSeats)
+        {
 
-         }
- */
+        }
+*/
 
     }
 }

@@ -29,8 +29,6 @@ namespace RestaurantManagement.API.Mapper
                 {
                     TableNumber = table.TableNumber,
                     Capacity = table.Capacity,
-
-
                 };
             }
             catch (Exception ex)

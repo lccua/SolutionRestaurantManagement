@@ -10,5 +10,6 @@ namespace RestaurantManagement.DOMAIN.Interface
     public interface IReservationRepository
     {
         Task AddReservationAsync(Reservation reservation);
+        Task<List<Table>> GetAvailableTables(DateTime date, TimeSpan hour, int restaurantId);
     }
 }

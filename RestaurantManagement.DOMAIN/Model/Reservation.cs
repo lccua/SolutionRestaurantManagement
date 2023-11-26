@@ -15,11 +15,11 @@ namespace RestaurantManagement.DOMAIN.Model
         private int _amountOfSeats;
         public int AmountOfSeats { get { return _amountOfSeats; } set { ValidateAmountOfSeats(value); _amountOfSeats = value; } }
 
-        private DateOnly _date;
-        public DateOnly Date { get { return _date; } set { ValidateDate(value); _date = value; } }
+        private DateTime _date;
+        public DateTime Date { get { return _date; } set { ValidateDate(value); _date = value; } }
 
-        private TimeOnly _hour;
-        public TimeOnly Hour { get { return _hour; } set { ValidateHour(value); _hour = value; } }
+        private TimeSpan _hour;
+        public TimeSpan Hour { get { return _hour; } set { ValidateHour(value); _hour = value; } }
 
         private int _tableNumber;
         public int TableNumber { get { return _tableNumber; } set { ValidateTableNumber(value); _tableNumber = value; } }
@@ -29,6 +29,9 @@ namespace RestaurantManagement.DOMAIN.Model
 
         private int _restaurantId;
         public int RestaurantId { get { return _restaurantId; } set { ValidateRestaurantId(value); _restaurantId = value; } }
+
+
+
 
         public Customer Customer { get; set; }
 
@@ -50,14 +53,30 @@ namespace RestaurantManagement.DOMAIN.Model
             }
         }
 
-        private void ValidateDate(DateOnly value)
+        private void ValidateDate(string value)
         {
-            // Add specific validation if needed
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ReservationException("Date cannot be null or empty");
+            }
         }
 
-        private void ValidateHour(TimeOnly value)
+        private void ValidateDate(DateTime value)
         {
-            // Add specific validation if needed
+            // Example validation: Date should be in the future
+            if (value.Date < DateTime.Now.Date)
+            {
+                throw new ReservationException("Invalid reservation date. Please choose a date in the future.");
+            }
+        }
+
+        private void ValidateHour(TimeSpan value)
+        {
+            // Example validation: Hour should be within business hours (adjust as needed)
+            if (value < TimeSpan.FromHours(9) || value >= TimeSpan.FromHours(22))
+            {
+                throw new ReservationException("Invalid reservation hour. Business hours are between 9 AM and 10 PM.");
+            }
         }
 
         private void ValidateTableNumber(int value)
@@ -75,6 +94,7 @@ namespace RestaurantManagement.DOMAIN.Model
 
         private void ValidateRestaurantId(int value)
         {
+
             if (value <= 0)
             {
                 throw new ReservationException("Invalid RestaurantId");

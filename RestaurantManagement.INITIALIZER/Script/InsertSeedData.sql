@@ -60,8 +60,8 @@ VALUES
 (8, 3);
 
 -- Insert dummy data into Reservation table
-INSERT INTO Reservation (Date, Hour, AmountOfSeats, CustomerNumber, RestaurantId, TableNumber)
+INSERT INTO Reservation (ReservationDate, StartHour, EndHour, AmountOfSeats, CustomerNumber, RestaurantId, TableNumber)
 VALUES
-('2023-11-25', '18:30:00', 2, 1, 1, 1),
-('2023-11-26', '19:00:00', 4, 2, 2, 2),
-('2023-11-27', '20:00:00', 6, 3, 3, 3);
+('2023-11-25', '18:00','19:30', 2, 1, 1, 1),
+('2023-11-26', '19:00','20:30',4, 2, 2, 2),
+('2023-11-27', '20:00','21:30', 6, 3, 3, 3);

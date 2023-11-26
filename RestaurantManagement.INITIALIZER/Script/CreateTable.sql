@@ -70,8 +70,10 @@ CREATE TABLE [Table] (
 -- Create Reservation table
 CREATE TABLE Reservation (
     ReservationNumber INT IDENTITY(1,1) PRIMARY KEY,
-    Date DATE,
-    Hour TIME,
+
+    ReservationDate DATE,
+    StartHour TIME,
+    EndHour TIME,
     AmountOfSeats INT,
 
     CustomerNumber INT,

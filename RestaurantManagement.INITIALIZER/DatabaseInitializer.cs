@@ -47,9 +47,9 @@ namespace RestaurantManagement.INITIALIZER
                 {
                     connection.Open();
 
-                    ExecuteScript(connection, "DropTables.sql");
+                    ExecuteScript(connection, "DropTable.sql");
 
-                    ExecuteScript(connection, "CreateTables.sql");
+                    ExecuteScript(connection, "CreateTable.sql");
 
                     ExecuteScript(connection, "InsertSeedData.sql");
                 }

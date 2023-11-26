@@ -11,7 +11,6 @@ namespace RestaurantManagement.API.Mapper
             {
                 return new Reservation
                 {
-                    ReservationNumber = reservationDTO.ReservationNumber,
                     Date = reservationDTO.ReservationDate,
                     Hour = reservationDTO.ReservationHour,
                     AmountOfSeats = reservationDTO.AmountOffSeats,
@@ -31,12 +30,12 @@ namespace RestaurantManagement.API.Mapper
             {
                 return new ReservationDTO
                 {
-                    ReservationNumber = reservation.ReservationNumber,
                     ReservationDate = reservation.Date,
                     ReservationHour = reservation.Hour,
                     AmountOffSeats = reservation.AmountOfSeats,
                     CustomerNumber = reservation.CustomerNumber,
-                    RestaurantNumber = reservation.RestaurantId
+                    RestaurantNumber = reservation.RestaurantId,
+                    TableNumber = reservation.TableNumber,
                 };
             }
             catch (Exception ex)
