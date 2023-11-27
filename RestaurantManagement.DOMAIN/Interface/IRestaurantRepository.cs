@@ -11,6 +11,7 @@ namespace RestaurantManagement.DOMAIN.Interface
     {
         Task<List<Table>> GetAvailableTablesAsync(DateTime reservationDate, TimeSpan reservationHour, int restaurantId);
         Task<List<Restaurant>> GetRestaurantsAsync(int? postalCode, int? cuisneId);
+        Task<List<Restaurant>> GetRestaurantsAsync(DateTime date, int amountOfSeats, int? postalCode, int? cuisineId);
 
     }
 }

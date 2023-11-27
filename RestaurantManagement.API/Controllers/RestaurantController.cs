@@ -50,7 +50,7 @@ namespace RestaurantManagement.API.Controllers
 
         [HttpGet]
         [Route("Get/")]
-        public async Task<ActionResult<List<Restaurant>>> GetRestaurant(int? postalCode, int? cuisineId)
+        public async Task<ActionResult<List<Restaurant>>> GetRestaurants(int? postalCode, int? cuisineId)
         {
             List<RestaurantDTO> restaurantDTOs = new List<RestaurantDTO>();
             try
@@ -77,12 +77,36 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
-        /*[HttpGet]
-        [Route("GetFilteredRestaurants")]
-        public async Task<ActionResult> GetRestaurants(DateOnly reservationDate, LocationDTO locationInputDTO, int cuisineId, int amountOfSeats)
+        [HttpGet]
+        [Route("Get/Date/{date}/Seats/{amountOfSeats}")]
+        public async Task<ActionResult> GetRestaurants(string date, int amountOfSeats, int? postalCode, int? cuisineId)
         {
+            List<RestaurantDTO> restaurantDTOs = new List<RestaurantDTO>();
+            try
+            {
+                DateTime paresedDate = Parser.ParseDate(date);
 
-        }*/
+                List<Restaurant> restaurants = await _restaurantManager.GetRestaurantsAsync(paresedDate, amountOfSeats, postalCode, cuisineId);
+
+                if (restaurants.Count == 0)
+                {
+                    return NotFound(); // No matching restaurants found
+                }
+
+                foreach (var restaurant in restaurants)
+                {
+                    RestaurantDTO restaurantDTO = RestaurantMapper.FromRestaurant(restaurant);
+                    restaurantDTOs.Add(restaurantDTO);
+                }
+
+                return Ok(restaurantDTOs);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }

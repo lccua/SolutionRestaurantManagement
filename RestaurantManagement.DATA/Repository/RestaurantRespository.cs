@@ -165,6 +165,104 @@ namespace RestaurantManagement.DATA.Repository
             return restaurants;
         }
 
+        public async Task<List<Restaurant>> GetRestaurantsAsync(DateTime date, int amountOfSeats, int? postalCode, int? cuisineId)
+        {
+            List<Restaurant> restaurants = new List<Restaurant>();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string sqlQuery = @"
+                                        SELECT DISTINCT
+                                            R.RestaurantId,
+                                            R.Name AS RestaurantName,
+                                            L.PostalCode,
+                                            L.MunicipalityName,
+                                            L.StreetName,
+                                            L.HouseNumber,
+                                            C.CuisineType,
+                                            CI.Email,
+                                            CI.PhoneNumber
+                                        FROM
+                                            Restaurant AS R
+                                        JOIN
+                                            Location AS L ON R.LocationId = L.LocationId
+                                        JOIN
+                                            Cuisine AS C ON R.CuisineId = C.CuisineId
+                                        JOIN
+                                            ContactInformation AS CI ON R.ContactInformationId = CI.ContactInformationId
+                                        JOIN
+                                            [Table] AS T ON R.RestaurantId = T.RestaurantId
+                                        LEFT JOIN
+                                            Reservation AS Res ON R.RestaurantId = Res.RestaurantId AND Res.ReservationDate = @ReservationDate
+                                        WHERE
+                                            (L.PostalCode = @PostalCode OR @PostalCode IS NULL)
+                                            AND
+                                            (C.CuisineId = @CuisineId OR @CuisineId IS NULL)
+                                            AND
+                                            T.Capacity >= @AmountOfSeats
+                                            AND
+                                            R.IsActive = 1
+                                            AND
+                                            (Res.ReservationNumber IS NULL OR Res.AmountOfSeats + @AmountOfSeats <= T.Capacity);
+
+                                        ";
+
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        // Add parameters
+                        command.Parameters.AddWithValue("@PostalCode", postalCode ?? (object)DBNull.Value);
+                        command.Parameters.AddWithValue("@CuisineId", cuisineId ?? (object)DBNull.Value);
+                        command.Parameters.AddWithValue("@ReservationDate", date);
+                        command.Parameters.AddWithValue("@AmountOfSeats", amountOfSeats);
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (reader.Read())
+                            {
+                                Restaurant restaurant = new Restaurant
+                                {
+                                    Name = reader.GetString(reader.GetOrdinal("RestaurantName")),
+                                    Location = new Location
+                                    {
+                                        PostalCode = reader.GetInt32(reader.GetOrdinal("PostalCode")),
+                                        MunicipalityName = reader.GetString(reader.GetOrdinal("MunicipalityName")),
+                                        StreetName = reader.GetString(reader.GetOrdinal("StreetName")),
+                                        HouseNumber = reader.GetString(reader.GetOrdinal("HouseNumber")),
+                                    },
+                                    Cuisine = new Cuisine
+                                    {
+                                        CuisineType = reader.GetString(reader.GetOrdinal("CuisineType")),
+                                    },
+                                    ContactInformation = new ContactInformation
+                                    {
+                                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                                        PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                                    }
+                                };
+
+                                restaurants.Add(restaurant);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                // Log the exception or handle it appropriately based on your application's logging strategy
+            }
+
+            return restaurants;
+        }
+
+
+
+
+
 
     }
 }
