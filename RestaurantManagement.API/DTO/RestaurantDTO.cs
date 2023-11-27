@@ -11,5 +11,6 @@ namespace RestaurantManagement.API.DTO
         public string RestaurantName { get; set; }
         public CuisineDTO CuisineDTO { get; set; }
         public ContactInformationDTO ContactInformationDTO { get; set; }
+        public LocationDTO LocationDTO { get; set; }
     }
 }

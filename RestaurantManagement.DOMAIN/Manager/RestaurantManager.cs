@@ -29,5 +29,20 @@ namespace RestaurantManagement.DOMAIN.Manager
                 throw;
             }
         }
+
+        public async Task<List<Restaurant>> GetRestaurantsAsync(int? postalCode, int? cuisneId)
+        {
+            try
+            {
+                return await _restaurantRepository.GetRestaurantsAsync(postalCode, cuisneId);
+
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
     }
 }

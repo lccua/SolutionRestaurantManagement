@@ -34,11 +34,11 @@ CREATE TABLE Admin (
 CREATE TABLE Customer (
     CustomerNumber INT IDENTITY(1,1) PRIMARY KEY,
     Name VARCHAR(255),
-    ContactId INT,
+    ContactInformationId INT,
     LocationId INT,
     IsActive INT DEFAULT 1,
 
-    FOREIGN KEY (ContactId) REFERENCES ContactInformation(ContactInformationId),
+    FOREIGN KEY (ContactInformationId) REFERENCES ContactInformation(ContactInformationId),
     FOREIGN KEY (LocationId) REFERENCES Location(LocationId)
 );
 
@@ -50,11 +50,11 @@ CREATE TABLE Restaurant (
 
     CuisineId INT,
     LocationId INT,
-    ContactId INT,
+    ContactInformationId INT,
   
     FOREIGN KEY (CuisineId) REFERENCES Cuisine(CuisineId),
     FOREIGN KEY (LocationId) REFERENCES Location(LocationId),
-    FOREIGN KEY (ContactId) REFERENCES ContactInformation(ContactInformationId)
+    FOREIGN KEY (ContactInformationId) REFERENCES ContactInformation(ContactInformationId)
 );
 
 -- Create [Table] table

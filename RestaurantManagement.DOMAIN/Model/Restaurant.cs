@@ -29,8 +29,6 @@ namespace RestaurantManagement.DOMAIN.Model
         private int _contactId;
         public int ContactId { get { return _contactId; } set { ValidateContactId(value); _contactId = value; } }
 
-        private int _isActive = 1;
-        public int IsActive { get { return _isActive; } set { ValidateIsActive(value); _isActive = value; } }
 
         public Cuisine Cuisine { get; set; }
 
@@ -76,11 +74,6 @@ namespace RestaurantManagement.DOMAIN.Model
             {
                 throw new RestaurantException("Invalid ContactId");
             }
-        }
-
-        private void ValidateIsActive(int value)
-        {
-            // Add specific validation if needed
         }
     }
 }

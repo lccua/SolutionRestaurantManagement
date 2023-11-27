@@ -30,14 +30,14 @@ VALUES
 ('stijn', 6);
 
 -- Insert dummy data into Customer table
-INSERT INTO Customer (Name, ContactId, LocationId)
+INSERT INTO Customer (Name, ContactInformationId, LocationId)
 VALUES
 ('john', 1, 1),
 ('jane', 2, 2),
 ('sam', 3, 3);
 
 -- Insert dummy data into Restaurant table
-INSERT INTO Restaurant (Name, IsActive, CuisineId, LocationId, ContactId)
+INSERT INTO Restaurant (Name, IsActive, CuisineId, LocationId, ContactInformationId)
 VALUES
 ('La Trattoria', 1, 1, 1, 1),
 ('Taco Fiesta', 1, 2, 2, 2),

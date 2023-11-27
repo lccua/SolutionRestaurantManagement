@@ -15,6 +15,7 @@ namespace RestaurantManagement.API.Mapper
                     Name = restaurantDTO.RestaurantName,
                     Cuisine = CuisineMapper.ToCuisineDTO(restaurantDTO.CuisineDTO),
                     ContactInformation = ContactInformationMapper.ToContactInformation(restaurantDTO.ContactInformationDTO),
+                    Location = LocationMapper.ToLocation(restaurantDTO.LocationDTO),
                 };
             }
             catch (Exception ex)
@@ -33,6 +34,7 @@ namespace RestaurantManagement.API.Mapper
                     RestaurantName = restaurant.Name,
                     CuisineDTO = CuisineMapper.FromCuisine(restaurant.Cuisine),
                     ContactInformationDTO = ContactInformationMapper.FromContactInformation(restaurant.ContactInformation),
+                    LocationDTO = LocationMapper.FromLocation(restaurant.Location),
 
                 };
             }
