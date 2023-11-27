@@ -11,15 +11,20 @@ namespace RestaurantManagement.DOMAIN.Manager
     public class ReservationManager
     {
         private readonly IReservationRepository _reservationRepository;
+        private readonly IRestaurantRepository _restaurantRepository;
 
-        public ReservationManager(IReservationRepository reservationRepository)
+
+        public ReservationManager(IReservationRepository reservationRepository, IRestaurantRepository restaurantRepository)
         {
             _reservationRepository = reservationRepository;
+            _restaurantRepository = restaurantRepository;
         }
 
         public async Task AddReservationAsync(Reservation reservation)
         {
-            List<Table> availableTables = await _reservationRepository.GetAvailableTables(reservation.Date, reservation.StartHour, reservation.RestaurantId);
+            
+
+            List<Table> availableTables = await _restaurantRepository.GetAvailableTablesAsync(reservation.Date, reservation.StartHour, reservation.RestaurantId);
 
             Table SelectedTable = SelectTable(availableTables, reservation.AmountOfSeats);
             reservation.TableNumber = SelectedTable.TableNumber;
@@ -27,6 +32,8 @@ namespace RestaurantManagement.DOMAIN.Manager
 
             await _reservationRepository.AddReservationAsync(reservation);
         }
+
+       
 
         public Table SelectTable (List<Table> availableTables, int amountOfSeats)
         {

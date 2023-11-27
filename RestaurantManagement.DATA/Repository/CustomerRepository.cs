@@ -146,7 +146,6 @@ namespace RestaurantManagement.DATA.Repository
             return null; // Customer not found or an error occurred
         }
 
-
         public async Task UpdateCustomerAsync(Customer updatedCustomer)
         {
             try

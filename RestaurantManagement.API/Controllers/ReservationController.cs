@@ -4,6 +4,7 @@ using RestaurantManagement.API.DTO;
 using RestaurantManagement.API.Mapper;
 using RestaurantManagement.DOMAIN.Manager;
 using RestaurantManagement.DOMAIN.Model;
+using RestaurantManagement.UTIL.Helper;
 
 namespace RestaurantManagement.API.Controllers
 {
@@ -39,6 +40,10 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
+      
+
+       
+
         /* [HttpPut]
          [Route("Update")]
          public async Task<ActionResult> PutReservation(int customerId, int reservationNumber, DateOnly reservationDate, TimeOnly reservationHour, int amountOffSeats)
@@ -51,14 +56,9 @@ namespace RestaurantManagement.API.Controllers
          public async Task<ActionResult> DeleteReservation(int customerId, int reservationNumber)
          {
              //reservation that has not passed yet
-         }
-
-         [HttpGet]
-         [Route("Get")]
-         public async Task<ActionResult> GetReservations(int CustomerId, DateOnly StartDate, DateOnly EndDate)
-         {
-             // Your code here
          }*/
+
+
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using RestaurantManagement.API.DTO;
 using RestaurantManagement.DOMAIN.Model;
+using RestaurantManagement.UTIL.Helper;
 
 namespace RestaurantManagement.API.Mapper
 {
@@ -9,14 +10,11 @@ namespace RestaurantManagement.API.Mapper
         {
             try
             {
-               
-                DateTime reservationDate = DateTime.Parse(reservationDTO.ReservationDate);
-                TimeSpan reservationHour = TimeSpan.Parse(reservationDTO.ReservationHour);
 
                 return new Reservation
                 {
-                    Date = reservationDate,
-                    StartHour = reservationHour,
+                    Date = Parser.ParseDate(reservationDTO.ReservationDate),
+                    StartHour = Parser.ParseTime(reservationDTO.ReservationHour),
                     AmountOfSeats = reservationDTO.AmountOffSeats,
                     CustomerNumber = reservationDTO.CustomerNumber,
                     RestaurantId = reservationDTO.RestaurantNumber,
@@ -47,5 +45,7 @@ namespace RestaurantManagement.API.Mapper
                 throw;
             }
         }
+
+ 
     }
 }

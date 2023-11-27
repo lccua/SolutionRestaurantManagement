@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestaurantManagement.DOMAIN.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace RestaurantManagement.DOMAIN.Interface
 {
     public interface IRestaurantRepository
     {
+        Task<List<Table>> GetAvailableTablesAsync(DateTime reservationDate, TimeSpan reservationHour, int restaurantId);
+
     }
 }

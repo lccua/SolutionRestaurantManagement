@@ -4,6 +4,11 @@ namespace RestaurantManagement.API.DTO
 {
     public class ReservationDTO
     {
+        public ReservationDTO()
+        {
+            
+        }
+
         [JsonIgnore]
         public int ReservationNumber { get; set; }
 
