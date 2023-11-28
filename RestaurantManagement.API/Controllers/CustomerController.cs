@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.DTO;
+using RestaurantManagement.API.DTO.Customer;
 using RestaurantManagement.API.Mapper;
 using RestaurantManagement.DOMAIN.Manager;
 using RestaurantManagement.DOMAIN.Model;
@@ -20,7 +21,7 @@ namespace RestaurantManagement.API.Controllers
 
         [HttpPost]
         [Route("Add")]
-        public async Task<ActionResult> PostCustomer([FromBody] CustomerDTO customerInputDTO)
+        public async Task<ActionResult> PostCustomer([FromBody] CustomerInputDTO customerInputDTO)
         {
             try
             {
@@ -29,7 +30,7 @@ namespace RestaurantManagement.API.Controllers
 
                 await _customerManager.RegisterCustomerAsync(customer);
 
-                CustomerDTO customerOutputDTO = CustomerMapper.FromCustomer(customer);
+                CustomerOutputDTO customerOutputDTO = CustomerMapper.FromCustomer(customer);
 
                 return CreatedAtAction(nameof(PostCustomer), customerOutputDTO);
             }
@@ -62,26 +63,27 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<IActionResult> PutCustomerAsync(int customerNumber, [FromBody] CustomerDTO customerInputDTO)
+        public async Task<ActionResult> PutCustomerAsync(int customerNumber, [FromBody] CustomerInputDTO customerInputDTO)
         {
             try
             {
                 // Retrieve the existing customer
-                Customer existingCustomer = await _customerManager.GetCustomerAsync(customerNumber);
+                bool isValid = await _customerManager.IsValidCustomerAsync(customerNumber);
 
-                if (existingCustomer == null)
+                if (!isValid)
                 {
                     return NotFound(); // Customer not found
                 }
 
-                Customer updatedCustomer = CustomerMapper.ToCustomerDTO(customerInputDTO);
-                updatedCustomer.CustomerNumber = customerNumber;
-                updatedCustomer.Location.Id = existingCustomer.Location.Id;
-                updatedCustomer.ContactInformation.Id = existingCustomer.ContactInformation.Id;
+                Customer customer = CustomerMapper.ToCustomerDTO(customerInputDTO);
+
+                customer.CustomerNumber = customerNumber;
+                customer.Location.Id = customer.Location.Id;
+                customer.ContactInformation.Id = customer.ContactInformation.Id;
 
 
                 // Call the repository method to update the customer
-                await _customerManager.UpdateCustomerAsync(updatedCustomer);
+                await _customerManager.UpdateCustomerAsync(customer);
 
 
                 return Ok(customerInputDTO);
@@ -106,7 +108,7 @@ namespace RestaurantManagement.API.Controllers
                 }
 
                 // Map the customer to a DTO for the response
-                CustomerDTO customerOutputDTO = CustomerMapper.FromCustomer(customer);
+                CustomerOutputDTO customerOutputDTO = CustomerMapper.FromCustomer(customer);
 
                 return Ok(customerOutputDTO);
             }

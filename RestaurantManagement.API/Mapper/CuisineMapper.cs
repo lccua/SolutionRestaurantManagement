@@ -1,17 +1,17 @@
 ﻿using RestaurantManagement.API.DTO;
+using RestaurantManagement.API.DTO.Cuisine;
 using RestaurantManagement.DOMAIN.Model;
 
 namespace RestaurantManagement.API.Mapper
 {
     public class CuisineMapper
     {
-        public static Cuisine ToCuisineDTO(CuisineDTO cuisineDTO)
+        public static Cuisine ToCuisineDTO(CuisineInputDTO cuisineDTO)
         {
             try
             {
                 return new Cuisine
                 {
-                    Id = cuisineDTO.CuisineId,
                     CuisineType = cuisineDTO.CuisineType,
                 };
             }
@@ -21,11 +21,11 @@ namespace RestaurantManagement.API.Mapper
                 throw;
             }
         }
-        public static CuisineDTO FromCuisine(Cuisine cuisine)
+        public static CuisineOutputDTO FromCuisine(Cuisine cuisine)
         {
             try
             {
-                return new CuisineDTO
+                return new CuisineOutputDTO
                 {
                     CuisineId = cuisine.Id,
                     CuisineType = cuisine.CuisineType,

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.DTO;
+using RestaurantManagement.API.DTO.Reservation;
 using RestaurantManagement.API.Mapper;
 using RestaurantManagement.DOMAIN.Manager;
 using RestaurantManagement.DOMAIN.Model;
@@ -21,16 +22,18 @@ namespace RestaurantManagement.API.Controllers
 
         [HttpPost]
         [Route("Add")]
-        public async Task<ActionResult> PostReservation(ReservationDTO reservationInputDTO)
+        public async Task<ActionResult> PostReservation(ReservationInputDTO reservationInputDTO)
         {
             try
             {
+
+
                 // Map ReservationDTO to Reservation
                 Reservation reservation = ReservationMapper.ToReservationDTO(reservationInputDTO);
 
                 await _reservationManager.AddReservationAsync(reservation);
 
-                ReservationDTO reservationOutputDTO = ReservationMapper.FromReservation(reservation);
+                ReservationOutputDTO reservationOutputDTO = ReservationMapper.FromReservation(reservation);
 
                 return CreatedAtAction(nameof(PostReservation), reservationOutputDTO);
             }
@@ -40,24 +43,47 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
-      
 
-       
 
-        /* [HttpPut]
-         [Route("Update")]
-         public async Task<ActionResult> PutReservation(int customerId, int reservationNumber, DateOnly reservationDate, TimeOnly reservationHour, int amountOffSeats)
-         {
-             //give error if the amount offseats or reservation date or reservation hour doesnt work
-         }
 
-         [HttpDelete]
-         [Route("Cancel")]
-         public async Task<ActionResult> DeleteReservation(int customerId, int reservationNumber)
-         {
-             //reservation that has not passed yet
-         }*/
 
+        [HttpPut]
+        [Route("Update")]
+        public async Task<ActionResult> PutReservation(int reservationNumber,  ReservationUpdateDTO reservationUpdateDTO)
+        {
+            try
+            {
+                // Retrieve the existing customer
+                bool isValid = await _reservationManager.IsValidReservationAsync(reservationNumber);
+
+                if (!isValid)
+                {
+                    return NotFound(); // Customer not found
+                }
+
+                Reservation reservation = ReservationMapper.ToReservationDTO(reservationUpdateDTO);
+                
+
+
+                // Call the repository method to update the customer
+                await _reservationManager.UpdateReservationAsync(reservationNumber,reservation);
+
+
+                return Ok(reservationUpdateDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+     /*   [HttpDelete]
+        [Route("Cancel")]
+        public async Task<ActionResult> DeleteReservation(int customerId, int reservationNumber)
+        {
+            //reservation that has not passed yet
+        }
+*/
 
 
     }

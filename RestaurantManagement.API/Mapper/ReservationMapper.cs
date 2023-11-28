@@ -1,4 +1,5 @@
 ﻿using RestaurantManagement.API.DTO;
+using RestaurantManagement.API.DTO.Reservation;
 using RestaurantManagement.DOMAIN.Model;
 using RestaurantManagement.UTIL.Helper;
 
@@ -6,7 +7,7 @@ namespace RestaurantManagement.API.Mapper
 {
     public class ReservationMapper
     {
-        public static Reservation ToReservationDTO(ReservationDTO reservationDTO)
+        public static Reservation ToReservationDTO(ReservationInputDTO reservationDTO)
         {
             try
             {
@@ -26,11 +27,31 @@ namespace RestaurantManagement.API.Mapper
                 throw;
             }
         }
-        public static ReservationDTO FromReservation(Reservation reservation)
+
+        public static Reservation ToReservationDTO(ReservationUpdateDTO reservationDTO)
         {
             try
             {
-                return new ReservationDTO
+
+                return new Reservation
+                {
+                    Date = Parser.ParseDate(reservationDTO.ReservationDate),
+                    StartHour = Parser.ParseTime(reservationDTO.ReservationHour),
+                    AmountOfSeats = reservationDTO.AmountOffSeats,
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public static ReservationOutputDTO FromReservation(Reservation reservation)
+        {
+            try
+            {
+                return new ReservationOutputDTO
                 {
                     ReservationDate = reservation.Date.ToString("yyyy-MM-dd"),
                     ReservationHour = reservation.StartHour.ToString(@"hh\:mm\"),
@@ -45,6 +66,8 @@ namespace RestaurantManagement.API.Mapper
                 throw;
             }
         }
+
+        
 
  
     }

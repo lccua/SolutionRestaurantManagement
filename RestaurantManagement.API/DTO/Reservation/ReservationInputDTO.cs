@@ -1,17 +1,7 @@
-﻿using System.Text.Json.Serialization;
-
-namespace RestaurantManagement.API.DTO
+﻿namespace RestaurantManagement.API.DTO.Reservation
 {
-    public class ReservationDTO
+    public class ReservationInputDTO
     {
-        public ReservationDTO()
-        {
-            
-        }
-
-        [JsonIgnore]
-        public int ReservationNumber { get; set; }
-
         public string ReservationDate { get; set; }
         public string ReservationHour { get; set; }
 
@@ -19,7 +9,6 @@ namespace RestaurantManagement.API.DTO
 
         public int CustomerNumber { get; set; }
         public int RestaurantNumber { get; set; }
-
 
     }
 }

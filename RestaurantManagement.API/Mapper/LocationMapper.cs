@@ -1,17 +1,17 @@
 ﻿using RestaurantManagement.API.DTO;
+using RestaurantManagement.API.DTO.Location;
 using RestaurantManagement.DOMAIN.Model;
 
 namespace RestaurantManagement.API.Mapper
 {
     public static class LocationMapper
     {
-        public static Location ToLocation(LocationDTO locationDTO)
+        public static Location ToLocation(LocationInputDTO locationDTO)
         {
             try
             {
                 return new Location
                 {
-                    Id = locationDTO.Id,
                     PostalCode = locationDTO.PostalCode,
                     MunicipalityName = locationDTO.MunicipalityName,
                     StreetName = locationDTO.StreetName,
@@ -26,11 +26,11 @@ namespace RestaurantManagement.API.Mapper
 
         }
 
-        public static LocationDTO FromLocation(Location location)
+        public static LocationOutputDTO FromLocation(Location location)
         {
             try
             {
-                return new LocationDTO
+                return new LocationOutputDTO
                 {
                     PostalCode = location.PostalCode,
                     MunicipalityName = location.MunicipalityName,

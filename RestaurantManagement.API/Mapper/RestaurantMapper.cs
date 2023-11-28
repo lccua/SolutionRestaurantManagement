@@ -1,17 +1,17 @@
 ﻿using RestaurantManagement.API.DTO;
+using RestaurantManagement.API.DTO.Restaurant;
 using RestaurantManagement.DOMAIN.Model;
 
 namespace RestaurantManagement.API.Mapper
 {
     public class RestaurantMapper
     {
-        public static Restaurant ToRestaurantDTO(RestaurantDTO restaurantDTO)
+        public static Restaurant ToRestaurantDTO(RestaurantInputDTO restaurantDTO)
         {
             try
             {
                 return new Restaurant
                 {
-                    RestaurantId = restaurantDTO.RestaurantId,
                     Name = restaurantDTO.RestaurantName,
                     Cuisine = CuisineMapper.ToCuisineDTO(restaurantDTO.CuisineDTO),
                     ContactInformation = ContactInformationMapper.ToContactInformation(restaurantDTO.ContactInformationDTO),
@@ -24,11 +24,11 @@ namespace RestaurantManagement.API.Mapper
                 throw;
             }
         }
-        public static RestaurantDTO FromRestaurant(Restaurant restaurant)
+        public static RestaurantOutputDTO FromRestaurant(Restaurant restaurant)
         {
             try
             {
-                return new RestaurantDTO
+                return new RestaurantOutputDTO
                 {
                     RestaurantId = restaurant.RestaurantId,
                     RestaurantName = restaurant.Name,

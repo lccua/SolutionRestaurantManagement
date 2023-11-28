@@ -241,5 +241,26 @@ namespace RestaurantManagement.DATA.Repository
             }
         }
 
+        public async Task<bool> IsValidCustomerAsync(int customerId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string sql = @"
+                            SELECT 1
+                            FROM Customer
+                            WHERE CustomerNumber = @CustomerNumber";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerNumber", customerId);
+
+                    var result = await command.ExecuteScalarAsync();
+                    return result != null && (int)result == 1;
+                }
+            }
+        }
+
     }
 }

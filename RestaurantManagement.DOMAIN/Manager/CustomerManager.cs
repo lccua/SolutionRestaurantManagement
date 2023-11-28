@@ -68,5 +68,19 @@ namespace RestaurantManagement.DOMAIN.Manager
                 throw;
             }
         }
+
+        public async Task<bool> IsValidCustomerAsync(int customerId)
+        {
+            try
+            {
+                return await _customerRepository.IsValidCustomerAsync(customerId);
+
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

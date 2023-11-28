@@ -1,17 +1,17 @@
 ﻿using RestaurantManagement.API.DTO;
+using RestaurantManagement.API.DTO.Table;
 using RestaurantManagement.DOMAIN.Model;
 
 namespace RestaurantManagement.API.Mapper
 {
     public class TableMapper
     {
-        public static Table ToTableDTO(TableDTO tableDTO)
+        public static Table ToTableDTO(TableInputDTO tableDTO)
         {
             try
             {
                 return new Table
                 {
-                    TableNumber = tableDTO.TableNumber,
                     Capacity = tableDTO.Capacity,
                 };
             }
@@ -21,11 +21,11 @@ namespace RestaurantManagement.API.Mapper
                 throw;
             }
         }
-        public static TableDTO FromTable(Table table)
+        public static TableOutputDTO FromTable(Table table)
         {
             try
             {
-                return new TableDTO
+                return new TableOutputDTO
                 {
                     TableNumber = table.TableNumber,
                     Capacity = table.Capacity,

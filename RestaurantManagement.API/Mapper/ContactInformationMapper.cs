@@ -1,17 +1,17 @@
 ﻿using RestaurantManagement.API.DTO;
+using RestaurantManagement.API.DTO.ContactInformation;
 using RestaurantManagement.DOMAIN.Model;
 
 namespace RestaurantManagement.API.Mapper
 {
     public static class ContactInformationMapper
     {
-        public static ContactInformation ToContactInformation(ContactInformationDTO contactInformationDTO)
+        public static ContactInformation ToContactInformation(ContactInformationInputDTO contactInformationDTO)
         {
             try
             {
                 return new ContactInformation
                 {
-                    Id = contactInformationDTO.Id,
                     Email = contactInformationDTO.Email,
                     PhoneNumber = contactInformationDTO.PhoneNumber
                 };
@@ -24,11 +24,11 @@ namespace RestaurantManagement.API.Mapper
 
         }
 
-        public static ContactInformationDTO FromContactInformation(ContactInformation contactInformation)
+        public static ContactInformationOutputDTO FromContactInformation(ContactInformation contactInformation)
         {
             try
             {
-                return new ContactInformationDTO
+                return new ContactInformationOutputDTO
                 {
                     Id = contactInformation.Id,
                     Email = contactInformation.Email,

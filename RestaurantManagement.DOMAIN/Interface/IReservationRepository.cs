@@ -11,5 +11,10 @@ namespace RestaurantManagement.DOMAIN.Interface
     {
         Task AddReservationAsync(Reservation reservation);
 
+        Task UpdateReservationAsync(int reservationNumber, Reservation reservation);
+
+        Task<bool> IsValidReservationAsync(int reservationId);
+
+
     }
 }

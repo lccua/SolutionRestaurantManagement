@@ -1,10 +1,8 @@
-﻿using System.Text.Json.Serialization;
-
-namespace RestaurantManagement.API.DTO
+﻿namespace RestaurantManagement.API.DTO.ContactInformation
 {
-    public class ContactInformationDTO
+    public class ContactInformationOutputDTO
     {
-        [JsonIgnore]
+
         public int Id { get; set; }
 
         public string Email { get; set; }

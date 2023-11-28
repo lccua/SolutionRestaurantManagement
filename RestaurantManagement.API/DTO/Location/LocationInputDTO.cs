@@ -1,12 +1,7 @@
-﻿using System.Text.Json.Serialization;
-
-namespace RestaurantManagement.API.DTO
+﻿namespace RestaurantManagement.API.DTO.Location
 {
-    public class LocationDTO
+    public class LocationInputDTO
     {
-        [JsonIgnore]
-        public int Id { get; set; }
-
         public int PostalCode { get; set; }
         public string MunicipalityName { get; set; }
         public string StreetName { get; set; }

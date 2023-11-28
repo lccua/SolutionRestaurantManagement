@@ -6,6 +6,7 @@ using RestaurantManagement.UTIL.Helper;
 using RestaurantManagement.API.DTO;
 using RestaurantManagement.DATA.Repository;
 using RestaurantManagement.API.Mapper;
+using RestaurantManagement.API.DTO.Restaurant;
 
 namespace RestaurantManagement.API.Controllers
 {
@@ -52,7 +53,7 @@ namespace RestaurantManagement.API.Controllers
         [Route("Get/")]
         public async Task<ActionResult<List<Restaurant>>> GetRestaurants(int? postalCode, int? cuisineId)
         {
-            List<RestaurantDTO> restaurantDTOs = new List<RestaurantDTO>();
+            List<RestaurantOutputDTO> restaurantOutputDTOs = new List<RestaurantOutputDTO>();
             try
             {
                 List<Restaurant> restaurants = await _restaurantManager.GetRestaurantsAsync(postalCode, cuisineId);
@@ -64,11 +65,11 @@ namespace RestaurantManagement.API.Controllers
 
                 foreach (var restaurant in restaurants)
                 {
-                    RestaurantDTO restaurantDTO = RestaurantMapper.FromRestaurant(restaurant);
-                    restaurantDTOs.Add(restaurantDTO);
+                    RestaurantOutputDTO restaurantOutputDTO = RestaurantMapper.FromRestaurant(restaurant);
+                    restaurantOutputDTOs.Add(restaurantOutputDTO);
                 }
 
-                return Ok(restaurantDTOs);
+                return Ok(restaurantOutputDTOs);
             }
             catch (Exception ex)
             {
@@ -81,7 +82,7 @@ namespace RestaurantManagement.API.Controllers
         [Route("Get/Date/{date}/Seats/{amountOfSeats}")]
         public async Task<ActionResult> GetRestaurants(string date, int amountOfSeats, int? postalCode, int? cuisineId)
         {
-            List<RestaurantDTO> restaurantDTOs = new List<RestaurantDTO>();
+            List<RestaurantOutputDTO> restaurantOutputDTOs = new List<RestaurantOutputDTO>();
             try
             {
                 DateTime paresedDate = Parser.ParseDate(date);
@@ -95,11 +96,11 @@ namespace RestaurantManagement.API.Controllers
 
                 foreach (var restaurant in restaurants)
                 {
-                    RestaurantDTO restaurantDTO = RestaurantMapper.FromRestaurant(restaurant);
-                    restaurantDTOs.Add(restaurantDTO);
+                    RestaurantOutputDTO restaurantOutputDTO = RestaurantMapper.FromRestaurant(restaurant);
+                    restaurantOutputDTOs.Add(restaurantOutputDTO);
                 }
 
-                return Ok(restaurantDTOs);
+                return Ok(restaurantOutputDTOs);
             }
             catch (Exception ex)
             {

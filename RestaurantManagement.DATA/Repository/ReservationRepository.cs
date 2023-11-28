@@ -63,5 +63,83 @@ namespace RestaurantManagement.DATA.Repository
             }
         }
 
+
+        public async Task<bool> IsValidReservationAsync(int reservationId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string sql = @"
+                SELECT 1
+                FROM Reservation
+                WHERE ReservationNumber = @ReservationId
+                AND ReservationDate >= GETDATE()";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@ReservationId", reservationId);
+
+                    var result = await command.ExecuteScalarAsync();
+                    return result != null && (int)result == 1;
+                }
+            }
+        }
+
+        public async Task UpdateReservationAsync(int reservationNumber, Reservation reservation)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            // Update ContactInformation
+                            string updateContactQuery = @"
+                                                        UPDATE Reservation 
+                                                        SET 
+                                                            ReservationDate = @ReservationDate,
+                                                            StartHour = @StartHour,
+                                                            AmountOfSeats = @AmountOfSeats
+                                                        WHERE ReservationNumber = @ReservationNumber";
+
+                            using (SqlCommand contactCommand = new SqlCommand(updateContactQuery, connection, transaction))
+                            {
+                                contactCommand.Parameters.AddWithValue("@ReservationDate", reservation.Date);
+                                contactCommand.Parameters.AddWithValue("@StartHour", reservation.StartHour);
+                                contactCommand.Parameters.AddWithValue("@AmountOfSeats", reservation.AmountOfSeats);
+                                contactCommand.Parameters.AddWithValue("@ReservationNumber", reservationNumber);
+
+
+
+                                await contactCommand.ExecuteNonQueryAsync();
+                            }
+
+                          
+                            // If everything is successful, commit the transaction
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            // An error occurred, rollback the transaction
+                            transaction.Rollback();
+
+                            Console.WriteLine($"Error in UpdateReservationAsync: {ex.Message}");
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in UpdateReservationAsync: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }
