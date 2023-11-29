@@ -34,11 +34,11 @@ namespace RestaurantManagement.DATA.Repository
                         // Associate the command with the transaction
                         command.Transaction = transaction;
 
-                        command.CommandText = "INSERT INTO Reservation (AmountOfSeats, Date, StartHour, EndHour, TableNumber, CustomerNumber, RestaurantId) VALUES (@AmountOfSeats, @Date, @StartHour, @EndHour, @TableNumber, @CustomerNumber, @RestaurantId)";
+                        command.CommandText = "INSERT INTO Reservation (AmountOfSeats, ReservationDate, StartHour, EndHour, TableNumber, CustomerNumber, RestaurantId) VALUES (@AmountOfSeats, @ReservationDate, @StartHour, @EndHour, @TableNumber, @CustomerNumber, @RestaurantId)";
 
                         // Add parameters
                         command.Parameters.AddWithValue("@AmountOfSeats", reservation.AmountOfSeats);
-                        command.Parameters.AddWithValue("@Date", reservation.Date);
+                        command.Parameters.AddWithValue("@ReservationDate", reservation.Date);
                         command.Parameters.AddWithValue("@StartHour", reservation.StartHour);
                         command.Parameters.AddWithValue("@EndHour", reservation.EndHour);
                         command.Parameters.AddWithValue("@RestaurantId", reservation.RestaurantId);
@@ -140,6 +140,51 @@ namespace RestaurantManagement.DATA.Repository
                 throw;
             }
         }
+
+        public async Task<Reservation> GetReservationAsync(int reservationNumber)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string query = @"
+                                    SELECT 
+                                        r.ReservationNumber
+                                    FROM Reservation r
+                                    WHERE r.ReservationNumber = @ReservationNumber";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@ReservationNumber", reservationNumber);
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                Reservation reservation = new Reservation
+                                {
+                                    ReservationNumber = (int)reader["ReservationNumber"], 
+                                };
+
+                                return reservation;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (log, throw, etc.)
+                // You may want to customize this based on your application's error handling strategy
+                Console.WriteLine($"Error in GetReservationAsync: {ex.Message}");
+            }
+
+            return null; // Reservation not found or an error occurred
+        }
+
+
 
     }
 }

@@ -20,6 +20,19 @@ namespace RestaurantManagement.DOMAIN.Manager
             _restaurantRepository = restaurantRepository;
         }
 
+        public async Task<Reservation> GetReservationAsync(int reservationNumber)
+        {
+            try
+            {
+                return await _reservationRepository.GetReservationAsync(reservationNumber);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                throw;
+            }
+        }
 
         public async Task<bool> IsValidReservationAsync(int reservationId)
         {

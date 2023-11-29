@@ -67,19 +67,19 @@ namespace RestaurantManagement.API.Controllers
         {
             try
             {
-                // Retrieve the existing customer
-                bool isValid = await _customerManager.IsValidCustomerAsync(customerNumber);
+                // Retrieve the customer based on customerNumber
+                Customer existingCustomer = await _customerManager.GetCustomerAsync(customerNumber);
 
-                if (!isValid)
+                if (existingCustomer == null)
                 {
                     return NotFound(); // Customer not found
                 }
 
                 Customer customer = CustomerMapper.ToCustomerDTO(customerInputDTO);
-
+                customer.ContactInformation.Id = existingCustomer.ContactInformation.Id;
                 customer.CustomerNumber = customerNumber;
-                customer.Location.Id = customer.Location.Id;
-                customer.ContactInformation.Id = customer.ContactInformation.Id;
+                customer.Location.Id = existingCustomer.Location.Id;
+
 
 
                 // Call the repository method to update the customer

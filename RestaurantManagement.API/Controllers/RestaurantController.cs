@@ -79,7 +79,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpGet]
-        [Route("Get/Date/{date}/Seats/{amountOfSeats}")]
+        [Route("Get/{date}/Seats/{amountOfSeats}")]
         public async Task<ActionResult> GetRestaurants(string date, int amountOfSeats, int? postalCode, int? cuisineId)
         {
             List<RestaurantOutputDTO> restaurantOutputDTOs = new List<RestaurantOutputDTO>();

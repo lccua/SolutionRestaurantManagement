@@ -54,7 +54,7 @@ namespace RestaurantManagement.API.Mapper
                 return new ReservationOutputDTO
                 {
                     ReservationDate = reservation.Date.ToString("yyyy-MM-dd"),
-                    ReservationHour = reservation.StartHour.ToString(@"hh\:mm\"),
+                    ReservationHour = reservation.StartHour.ToString(@"hh\:mm"),
                     AmountOffSeats = reservation.AmountOfSeats,
                     CustomerNumber = reservation.CustomerNumber,
                     RestaurantNumber = reservation.RestaurantId,

@@ -44,9 +44,6 @@ namespace RestaurantManagement.API.Controllers
         }
 
 
-
-
-
         [HttpPut]
         [Route("Update")]
         public async Task<ActionResult> PutReservation(int reservationNumber,  ReservationUpdateDTO reservationUpdateDTO)
@@ -54,9 +51,9 @@ namespace RestaurantManagement.API.Controllers
             try
             {
                 // Retrieve the existing customer
-                bool isValid = await _reservationManager.IsValidReservationAsync(reservationNumber);
+                Reservation exsistingReservation = await _reservationManager.GetReservationAsync(reservationNumber);
 
-                if (!isValid)
+                if (exsistingReservation == null)
                 {
                     return NotFound(); // Customer not found
                 }

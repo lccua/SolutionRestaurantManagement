@@ -100,20 +100,14 @@ namespace RestaurantManagement.DATA.Repository
                     string query = @"
                                     SELECT 
                                         c.CustomerNumber,
-                                        c.Name,
                                         ci.ContactInformationId,
-                                        ci.Email,
-                                        ci.PhoneNumber,
-                                        l.LocationId,
-                                        l.PostalCode,
-                                        l.MunicipalityName,
-                                        l.StreetName,
-                                        l.HouseNumber
+                                        l.LocationId
                                     FROM Customer c
-                                    JOIN ContactInformation ci ON c.ContactId = ci.ContactInformationId
+                                    JOIN ContactInformation ci ON c.ContactInformationId = ci.ContactInformationId
                                     JOIN Location l ON c.LocationId = l.LocationId
                                     WHERE c.CustomerNumber = @CustomerNumber
-                                      AND c.IsActive = 1";
+                                        AND c.IsActive = 1";
+
 
 
                     using (SqlCommand command = new SqlCommand(query, connection))
@@ -124,11 +118,25 @@ namespace RestaurantManagement.DATA.Repository
                         {
                             if (await reader.ReadAsync())
                             {
-                                ContactInformation contactInformation = new ContactInformation((int)reader["ContactInformationId"], (string)reader["Email"], (string)reader["PhoneNumber"]);
+                                Customer customer = new Customer
+                                {
+                                    CustomerNumber = (int)reader["CustomerNumber"]
+                                };
 
-                                Location location = new Location((int)reader["LocationId"], (int)reader["PostalCode"], (string)reader["MunicipalityName"], (string)reader["StreetName"], (string)reader["HouseNumber"]);
+                                Location location = new Location
+                                {
+                                    Id = (int)reader["LocationId"]
+                                };
 
-                                Customer customer = new Customer((int)reader["CustomerNumber"], (string)reader["Name"], contactInformation, location);
+                                ContactInformation contactInformation = new ContactInformation
+                                {
+                                    Id = (int)reader["ContactInformationId"]
+                                };
+
+                                // Assuming there are properties in the Customer class for Location and ContactInformation
+                                customer.Location = location;
+                                customer.ContactInformation = contactInformation;
+
 
                                 return customer; // Return the created Customer object
                             }
@@ -205,7 +213,7 @@ namespace RestaurantManagement.DATA.Repository
                                                          SET 
                                                              Name = @Name,
                                                              IsActive = @IsActive,
-                                                             ContactId = @ContactId,
+                                                             ContactInformationId = @ContactInformationId,
                                                              LocationId = @LocationId
                                                          WHERE CustomerNumber = @CustomerNumber";
 
@@ -213,7 +221,7 @@ namespace RestaurantManagement.DATA.Repository
                             {
                                 customerCommand.Parameters.AddWithValue("@Name", updatedCustomer.Name);
                                 customerCommand.Parameters.AddWithValue("@IsActive", updatedCustomer.IsActive);
-                                customerCommand.Parameters.AddWithValue("@ContactId", updatedCustomer.ContactInformation.Id);
+                                customerCommand.Parameters.AddWithValue("@ContactInformationId", updatedCustomer.ContactInformation.Id);
                                 customerCommand.Parameters.AddWithValue("@LocationId", updatedCustomer.Location.Id);
                                 customerCommand.Parameters.AddWithValue("@CustomerNumber", updatedCustomer.CustomerNumber);
 
