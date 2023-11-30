@@ -12,8 +12,8 @@ namespace RestaurantManagement.API.Mapper
             {
                 return new Customer
                 {
-                    ContactInformation = ContactInformationMapper.ToContactInformation(customerDTO.ContactInformationDTO),
-                    Location = LocationMapper.ToLocation(customerDTO.LocationDTO),
+                    ContactInformation = ContactInformationMapper.ToContactInformation(customerDTO.ContactInformationInput),
+                    Location = LocationMapper.ToLocation(customerDTO.LocationInput),
                     Name = customerDTO.Name,
                 };
             }
@@ -30,8 +30,8 @@ namespace RestaurantManagement.API.Mapper
                 {
                     CustomerNumber = customer.CustomerNumber,
                     Name = customer.Name,
-                    ContactInformationDTO = ContactInformationMapper.FromContactInformation(customer.ContactInformation),
-                    LocationDTO = LocationMapper.FromLocation(customer.Location),
+                    ContactInformationOutput = ContactInformationMapper.FromContactInformation(customer.ContactInformation),
+                    LocationOutput = LocationMapper.FromLocation(customer.Location),
                 };
             }
             catch (Exception)

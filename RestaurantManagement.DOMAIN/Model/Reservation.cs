@@ -40,6 +40,8 @@ namespace RestaurantManagement.DOMAIN.Model
 
         public Restaurant Restaurant { get; set; }
 
+        public Table Table { get; set; }
+
         private void ValidateReservationNumber(int value)
         {
             if (value <= 0)
@@ -69,16 +71,22 @@ namespace RestaurantManagement.DOMAIN.Model
 
         private void ValidateHour(TimeSpan value)
         {
-            // Example validation: Hour should be within business hours (adjust as needed)
-            if (value < TimeSpan.FromHours(9) || value >= TimeSpan.FromHours(22))
+           
+            // Allow only exact hours or half-hours
+            int minutes = value.Minutes;
+            if (minutes != 0 && minutes != 30)
             {
-                throw new ReservationException("Invalid reservation hour. Business hours are between 9 AM and 10 PM.");
+                throw new ReservationException("Invalid reservation hour. Only exact hours or half-hours are allowed.");
             }
         }
 
+
         private void ValidateTableNumber(int value)
         {
-            // Add specific validation if needed
+            if (value <= 0)
+            {
+                throw new ReservationException("Invalid ReservationNumber");
+            }
         }
 
         private void ValidateCustomerNumber(int value)

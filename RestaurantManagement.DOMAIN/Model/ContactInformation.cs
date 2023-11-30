@@ -9,17 +9,7 @@ namespace RestaurantManagement.DOMAIN.Model
 {
     public class ContactInformation
     {
-        public ContactInformation()
-        {
-
-        }
-
-        public ContactInformation(int id, string email, string phoneNumber)
-        {
-            _id = id;
-            _email = email;
-            _phoneNumber = phoneNumber;
-        }
+       
 
         private int _id;
         public int Id { get { return _id; } set { ValidateId(value); _id = value; } }

@@ -32,6 +32,7 @@ namespace RestaurantManagement.API.Mapper
             {
                 return new LocationOutputDTO
                 {
+                    Id = location.Id,
                     PostalCode = location.PostalCode,
                     MunicipalityName = location.MunicipalityName,
                     StreetName = location.StreetName,

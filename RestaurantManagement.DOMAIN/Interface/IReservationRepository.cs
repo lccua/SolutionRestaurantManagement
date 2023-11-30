@@ -13,9 +13,9 @@ namespace RestaurantManagement.DOMAIN.Interface
 
         Task UpdateReservationAsync(int reservationNumber, Reservation reservation);
 
-        Task<bool> IsValidReservationAsync(int reservationId);
+        Task<List<Reservation>> GetReservationsAsync(int customerNumber, DateTime startDate, DateTime endDate);
 
-        Task<Reservation> GetReservationAsync(int reservationNumber);
+        Task CancelReservationAsync(int reservationNumber);
 
 
     }

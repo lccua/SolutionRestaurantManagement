@@ -53,11 +53,12 @@ namespace RestaurantManagement.API.Mapper
             {
                 return new ReservationOutputDTO
                 {
+                    ReservationNumber = reservation.ReservationNumber,
                     ReservationDate = reservation.Date.ToString("yyyy-MM-dd"),
                     ReservationHour = reservation.StartHour.ToString(@"hh\:mm"),
                     AmountOffSeats = reservation.AmountOfSeats,
-                    CustomerNumber = reservation.CustomerNumber,
-                    RestaurantNumber = reservation.RestaurantId,
+                    CustomerOutput = CustomerMapper.FromCustomer(reservation.Customer),
+                    RestaurantOutput = RestaurantMapper.FromRestaurant(reservation.Restaurant),
                 };
             }
             catch (Exception ex)
@@ -67,8 +68,10 @@ namespace RestaurantManagement.API.Mapper
             }
         }
 
-        
+      
 
- 
+
+
+
     }
 }

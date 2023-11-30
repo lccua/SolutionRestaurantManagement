@@ -13,9 +13,9 @@ namespace RestaurantManagement.API.Mapper
                 return new Restaurant
                 {
                     Name = restaurantDTO.RestaurantName,
-                    Cuisine = CuisineMapper.ToCuisineDTO(restaurantDTO.CuisineDTO),
-                    ContactInformation = ContactInformationMapper.ToContactInformation(restaurantDTO.ContactInformationDTO),
-                    Location = LocationMapper.ToLocation(restaurantDTO.LocationDTO),
+                    Cuisine = CuisineMapper.ToCuisineDTO(restaurantDTO.CuisineInput),
+                    ContactInformation = ContactInformationMapper.ToContactInformation(restaurantDTO.ContactInformationInput),
+                    Location = LocationMapper.ToLocation(restaurantDTO.LocationInput),
                 };
             }
             catch (Exception ex)
@@ -32,9 +32,9 @@ namespace RestaurantManagement.API.Mapper
                 {
                     RestaurantId = restaurant.RestaurantId,
                     RestaurantName = restaurant.Name,
-                    CuisineDTO = CuisineMapper.FromCuisine(restaurant.Cuisine),
-                    ContactInformationDTO = ContactInformationMapper.FromContactInformation(restaurant.ContactInformation),
-                    LocationDTO = LocationMapper.FromLocation(restaurant.Location),
+                    CuisineOutput = CuisineMapper.FromCuisine(restaurant.Cuisine),
+                    ContactInformationOutput = ContactInformationMapper.FromContactInformation(restaurant.ContactInformation),
+                    LocationOutput = LocationMapper.FromLocation(restaurant.Location),
 
                 };
             }

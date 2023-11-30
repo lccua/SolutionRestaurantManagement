@@ -7,7 +7,7 @@ namespace RestaurantManagement.API.DTO.Customer
     {
 
         public string Name { get; set; }
-        public LocationInputDTO LocationDTO { get; set; }
-        public ContactInformationInputDTO ContactInformationDTO { get; set; }
+        public LocationInputDTO LocationInput { get; set; }
+        public ContactInformationInputDTO ContactInformationInput { get; set; }
     }
 }

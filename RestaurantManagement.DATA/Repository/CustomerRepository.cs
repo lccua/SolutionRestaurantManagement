@@ -220,7 +220,6 @@ namespace RestaurantManagement.DATA.Repository
                             using (SqlCommand customerCommand = new SqlCommand(updateCustomerQuery, connection, transaction))
                             {
                                 customerCommand.Parameters.AddWithValue("@Name", updatedCustomer.Name);
-                                customerCommand.Parameters.AddWithValue("@IsActive", updatedCustomer.IsActive);
                                 customerCommand.Parameters.AddWithValue("@ContactInformationId", updatedCustomer.ContactInformation.Id);
                                 customerCommand.Parameters.AddWithValue("@LocationId", updatedCustomer.Location.Id);
                                 customerCommand.Parameters.AddWithValue("@CustomerNumber", updatedCustomer.CustomerNumber);

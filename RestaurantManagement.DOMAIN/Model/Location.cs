@@ -12,19 +12,7 @@ namespace RestaurantManagement.DOMAIN.Model
     {
 
 
-        public Location()
-        {
-
-        }
-
-        public Location(int id, int postalCode, string municipalityName, string streetName, string houseNumber)
-        {
-            _id = id;
-            _postalCode = postalCode;
-            _municipalityName = municipalityName;
-            _streetName = streetName;
-            _houseNumber = houseNumber;
-        }
+      
 
         private int _id;
         public int Id { get { return _id; } set { ValidateId(value); _id = value; } }

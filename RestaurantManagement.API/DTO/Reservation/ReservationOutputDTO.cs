@@ -1,4 +1,7 @@
-﻿namespace RestaurantManagement.API.DTO.Reservation
+﻿using RestaurantManagement.API.DTO.Customer;
+using RestaurantManagement.API.DTO.Restaurant;
+
+namespace RestaurantManagement.API.DTO.Reservation
 {
     public class ReservationOutputDTO
     {
@@ -9,7 +12,7 @@
 
         public int AmountOffSeats { get; set; }
 
-        public int CustomerNumber { get; set; }
-        public int RestaurantNumber { get; set; }
+        public CustomerOutputDTO CustomerOutput { get; set; }
+        public RestaurantOutputDTO RestaurantOutput { get; set; }
     }
 }

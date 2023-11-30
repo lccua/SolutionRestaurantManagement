@@ -9,10 +9,7 @@ namespace RestaurantManagement.DOMAIN.Model
 {
     public class Restaurant
     {
-        public Restaurant()
-        {
-
-        }
+      
 
         private int _restaurantId;
         public int RestaurantId { get { return _restaurantId; } set { ValidateRestaurantId(value); _restaurantId = value; } }

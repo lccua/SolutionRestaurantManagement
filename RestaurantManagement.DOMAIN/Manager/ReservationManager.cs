@@ -20,11 +20,11 @@ namespace RestaurantManagement.DOMAIN.Manager
             _restaurantRepository = restaurantRepository;
         }
 
-        public async Task<Reservation> GetReservationAsync(int reservationNumber)
+        public async Task<List<Reservation>> GetReservationsAsync(int customerNumber, DateTime startDate, DateTime endDate)
         {
             try
             {
-                return await _reservationRepository.GetReservationAsync(reservationNumber);
+                return await _reservationRepository.GetReservationsAsync(customerNumber, startDate, endDate);
             }
             catch (System.Exception ex)
             {
@@ -34,11 +34,11 @@ namespace RestaurantManagement.DOMAIN.Manager
             }
         }
 
-        public async Task<bool> IsValidReservationAsync(int reservationId)
+        public async Task CancelReservationAsync(int reservationId)
         {
             try
             {
-                return await _reservationRepository.IsValidReservationAsync(reservationId);
+                await _reservationRepository.CancelReservationAsync(reservationId);
             }
             catch (System.Exception ex)
             {

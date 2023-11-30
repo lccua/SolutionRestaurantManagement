@@ -6,7 +6,7 @@ namespace RestaurantManagement.API.DTO.Table
     {
 
         public int Capacity { get; set; }
-        public RestaurantInputDTO RestaurantDTO { get; set; }
+        public RestaurantInputDTO RestaurantInput { get; set; }
 
     }
 }

@@ -10,18 +10,7 @@ namespace RestaurantManagement.DOMAIN.Model
     public class Customer
     {
 
-        public Customer()
-        {
-
-        }
-
-        public Customer(int customerNumber, string name, ContactInformation contactInformation, Location location)
-        {
-            _customerNumber = customerNumber;
-            _name = name;
-            _contactInformation = contactInformation;
-            _location = location;
-        }
+        
 
         private int _customerNumber;
         public int CustomerNumber { get { return _customerNumber; } set { ValidateCustomerNumber(value); _customerNumber = value; } }
@@ -29,8 +18,7 @@ namespace RestaurantManagement.DOMAIN.Model
         private string _name;
         public string Name { get { return _name; } set { ValidateName(value); _name = value; } }
 
-        private int _isActive = 1;
-        public int IsActive { get { return _isActive; } set { ValidateIsActive(value); _isActive = value; } }
+       
 
         private ContactInformation _contactInformation;
         public ContactInformation ContactInformation { get { return _contactInformation; } set { ValidateContactInformation(value); _contactInformation = value; } }
@@ -73,12 +61,6 @@ namespace RestaurantManagement.DOMAIN.Model
             // You can add more specific validation for Location if needed
         }
 
-        private void ValidateIsActive(int value)
-        {
-            if (value <= 0)
-            {
-                throw new CustomerException("Invalid IsActive");
-            }
-        }
+       
     }
 }

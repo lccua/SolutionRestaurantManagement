@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.API.DTO;
+using RestaurantManagement.API.DTO.Customer;
 using RestaurantManagement.API.DTO.Reservation;
 using RestaurantManagement.API.Mapper;
 using RestaurantManagement.DOMAIN.Manager;
@@ -50,23 +51,14 @@ namespace RestaurantManagement.API.Controllers
         {
             try
             {
-                // Retrieve the existing customer
-                Reservation exsistingReservation = await _reservationManager.GetReservationAsync(reservationNumber);
-
-                if (exsistingReservation == null)
-                {
-                    return NotFound(); // Customer not found
-                }
-
                 Reservation reservation = ReservationMapper.ToReservationDTO(reservationUpdateDTO);
                 
-
-
                 // Call the repository method to update the customer
                 await _reservationManager.UpdateReservationAsync(reservationNumber,reservation);
 
+                ReservationOutputDTO reservationOutput = ReservationMapper.FromReservation(reservation);
 
-                return Ok(reservationUpdateDTO);
+                return Ok(reservationOutput);
             }
             catch (Exception ex)
             {
@@ -74,13 +66,55 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
-     /*   [HttpDelete]
+        [HttpDelete]
         [Route("Cancel")]
-        public async Task<ActionResult> DeleteReservation(int customerId, int reservationNumber)
+        public async Task<ActionResult> DeleteReservation(int reservationNumber)
         {
-            //reservation that has not passed yet
+            try
+            {
+                await _reservationManager.CancelReservationAsync(reservationNumber);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-*/
+
+        [HttpGet]
+        [Route("Get/{customerNumber}")]
+        public async Task<ActionResult> GetReservationByReservationDate(int customerNumber, string startDate, string endDate)
+        {
+            try
+            {
+                List<ReservationOutputDTO> reservationOutputDTOs = new List<ReservationOutputDTO>();
+                DateTime parsedStartDate = Parser.ParseDate(startDate);
+                DateTime parsedEndDate = Parser.ParseDate(endDate);
+
+                List<Reservation> reservations = await _reservationManager.GetReservationsAsync(customerNumber, parsedStartDate, parsedEndDate);
+
+                if (reservations.Count == 0)
+                {
+                    return NotFound(); // Customer not found
+                }
+
+                foreach (Reservation reservation in reservations)
+                {
+                    ReservationOutputDTO reservationOutputDTO = ReservationMapper.FromReservation(reservation);
+                    reservationOutputDTOs.Add(reservationOutputDTO);
+                }
+
+
+                return Ok(reservationOutputDTOs);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 
     }

@@ -9,8 +9,8 @@ namespace RestaurantManagement.API.DTO.Restaurant
         public int RestaurantId { get; set; }
 
         public string RestaurantName { get; set; }
-        public CuisineOutputDTO CuisineDTO { get; set; }
-        public ContactInformationOutputDTO ContactInformationDTO { get; set; }
-        public LocationOutputDTO LocationDTO { get; set; }
+        public CuisineOutputDTO CuisineOutput { get; set; }
+        public ContactInformationOutputDTO ContactInformationOutput { get; set; }
+        public LocationOutputDTO LocationOutput { get; set; }
     }
 }
