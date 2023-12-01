@@ -424,6 +424,122 @@ namespace RestaurantManagement.DATA.Repository
             }
         }
 
+        public async Task UpdateRestaurantAsync(int restaurantId, Restaurant restaurant)
+        {
+            try
+            {
+                // Retrieve existing LocationId, ContactInformationId, and CuisineId
+                int existingLocationId;
+                int existingContactInformationId;
+                int existingCuisineId;
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    // Retrieve existing LocationId, ContactInformationId, and CuisineId from the Restaurant table
+                    string selectIdsSQL = "SELECT LocationId, ContactInformationId, CuisineId FROM Restaurant WHERE RestaurantId = @restaurantId";
+
+                    command.CommandText = selectIdsSQL;
+                    command.Parameters.AddWithValue("@restaurantId", restaurantId);
+
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.Read())
+                        {
+                            existingLocationId = reader.GetInt32(0);
+                            existingContactInformationId = reader.GetInt32(1);
+                            existingCuisineId = reader.GetInt32(2);
+                        }
+                        else
+                        {
+                            throw new Exception($"Restaurant with ID {restaurantId} not found.");
+                        }
+                    }
+                }
+
+                // Now you can use existingLocationId, existingContactInformationId, and existingCuisineId as needed
+
+                // Proceed with your update logic here...
+
+                string updateCuisineSQL = "UPDATE Cuisine SET CuisineType = @cuisineType WHERE CuisineId = @cuisineId";
+                string updateLocationSQL = "UPDATE Location SET PostalCode = @postalCode, MunicipalityName = @municipalityName, StreetName = @streetName, HouseNumber = @houseNumber WHERE LocationId = @locationId";
+                string updateContactInformationSQL = "UPDATE ContactInformation SET Email = @email, PhoneNumber = @phoneNumber WHERE ContactInformationId = @contactInformationId";
+                string updateRestaurantSQL = "UPDATE Restaurant SET Name = @name WHERE RestaurantId = @restaurantId";
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    SqlTransaction transaction = connection.BeginTransaction();
+
+                    try
+                    {
+                        // Update Cuisine
+                        command.CommandText = updateCuisineSQL;
+                        command.Transaction = transaction;
+                        command.Parameters.AddWithValue("@cuisineType", restaurant.Cuisine.CuisineType);
+                        command.Parameters.AddWithValue("@cuisineId", existingCuisineId); // Use existingCuisineId
+                        await command.ExecuteNonQueryAsync();
+
+                        // Update Location
+                        command.CommandText = updateLocationSQL;
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@postalCode", restaurant.Location.PostalCode);
+                        command.Parameters.AddWithValue("@municipalityName", restaurant.Location.MunicipalityName);
+                        command.Parameters.AddWithValue("@streetName", restaurant.Location.StreetName);
+                        command.Parameters.AddWithValue("@houseNumber", restaurant.Location.HouseNumber);
+                        command.Parameters.AddWithValue("@locationId", existingLocationId); // Use existingLocationId
+                        await command.ExecuteNonQueryAsync();
+
+                        // Update ContactInformation
+                        command.CommandText = updateContactInformationSQL;
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@email", restaurant.ContactInformation.Email);
+                        command.Parameters.AddWithValue("@phoneNumber", restaurant.ContactInformation.PhoneNumber);
+                        command.Parameters.AddWithValue("@contactInformationId", existingContactInformationId); // Use existingContactInformationId
+                        await command.ExecuteNonQueryAsync();
+
+                        // Update Restaurant
+                        command.CommandText = updateRestaurantSQL;
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@name", restaurant.Name);
+                        command.Parameters.AddWithValue("@restaurantId", restaurantId);
+                        await command.ExecuteNonQueryAsync();
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error updating restaurant.", ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating restaurant", ex);
+            }
+        }
+
+
+        public async Task DeleteRestaurantAsync(int restaurantId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = "UPDATE Restaurant SET IsActive = 0 WHERE RestaurantId = @RestaurantId";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@RestaurantId", restaurantId);
+
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
 
     }
 }

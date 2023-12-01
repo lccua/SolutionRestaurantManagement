@@ -14,7 +14,6 @@ namespace RestaurantManagement.API.Controllers
     [ApiController]
     public class ReservationController : ControllerBase
     {
-
         private readonly ReservationManager _reservationManager;
         public ReservationController(ReservationManager reservationManager)
         {
@@ -43,7 +42,6 @@ namespace RestaurantManagement.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
         [HttpPut]
         [Route("Update")]
@@ -83,8 +81,8 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpGet]
-        [Route("Get/{customerNumber}")]
-        public async Task<ActionResult> GetReservationByReservationDate(int customerNumber, string startDate, string endDate)
+        [Route("Customer/GetByPeriod")]
+        public async Task<ActionResult> GetCustomerReservationsByPeriod(int customerNumber, string startDate, string endDate)
         {
             try
             {
@@ -115,7 +113,70 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("Restaurant/GetByPeriod")]
+        public async Task<ActionResult> GetRestaurantReservationsForPeriod(int restaurantId, string startDate, string endDate)
+        {
+            try
+            {
+                List<ReservationOutputDTO> reservationOutputDTOs = new List<ReservationOutputDTO>();
+                DateTime parsedStartDate = Parser.ParseDate(startDate);
+                DateTime parsedEndDate = Parser.ParseDate(endDate);
+
+                List<Reservation> reservations = await _reservationManager.GetRestaurantReservationsForPeriodAsync(restaurantId, parsedStartDate, parsedEndDate);
+
+                if (reservations.Count == 0)
+                {
+                    return NotFound(); // Customer not found
+                }
+
+                foreach (Reservation reservation in reservations)
+                {
+                    ReservationOutputDTO reservationOutputDTO = ReservationMapper.FromReservation(reservation);
+                    reservationOutputDTOs.Add(reservationOutputDTO);
+                }
 
 
+                return Ok(reservationOutputDTOs);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("Restaurant/GetByDay")]
+        public async Task<ActionResult> GetRestaurantReservationsForDay(int restaurantId, string date)
+        {
+            try
+            {
+                List<ReservationOutputDTO> reservationOutputDTOs = new List<ReservationOutputDTO>();
+                DateTime parsedDate = Parser.ParseDate(date);
+
+
+                List<Reservation> reservations = await _reservationManager.GetRestaurantReservationsForDayAsync(restaurantId, parsedDate);
+
+                if (reservations.Count == 0)
+                {
+                    return NotFound(); // Customer not found
+                }
+
+                foreach (Reservation reservation in reservations)
+                {
+                    ReservationOutputDTO reservationOutputDTO = ReservationMapper.FromReservation(reservation);
+                    reservationOutputDTOs.Add(reservationOutputDTO);
+                }
+
+
+                return Ok(reservationOutputDTOs);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

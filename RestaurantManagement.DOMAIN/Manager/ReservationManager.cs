@@ -24,7 +24,7 @@ namespace RestaurantManagement.DOMAIN.Manager
         {
             try
             {
-                return await _reservationRepository.GetReservationsAsync(customerNumber, startDate, endDate);
+                return await _reservationRepository.GetCustomerReservationsByPeriodAsync(customerNumber, startDate, endDate);
             }
             catch (System.Exception ex)
             {
@@ -73,7 +73,35 @@ namespace RestaurantManagement.DOMAIN.Manager
             await _reservationRepository.AddReservationAsync(reservation);
         }
 
-       
+        public async Task<List<Reservation>> GetRestaurantReservationsForPeriodAsync(int restaurantId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                return await _reservationRepository.GetRestaurantReservationsForPeriodAsync(restaurantId, startDate, endDate);
+
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+        }
+
+        public async Task<List<Reservation>> GetRestaurantReservationsForDayAsync(int restaurantId, DateTime date)
+        {
+            try
+            {
+                return await _reservationRepository.GetRestaurantReservationsForDayAsync(restaurantId, date);
+
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+        }
 
         public Table SelectTable (List<Table> availableTables, int amountOfSeats)
         {

@@ -13,9 +13,15 @@ namespace RestaurantManagement.DOMAIN.Interface
 
         Task UpdateReservationAsync(int reservationNumber, Reservation reservation);
 
-        Task<List<Reservation>> GetReservationsAsync(int customerNumber, DateTime startDate, DateTime endDate);
+        Task<List<Reservation>> GetCustomerReservationsByPeriodAsync(int customerNumber, DateTime startDate, DateTime endDate);
 
         Task CancelReservationAsync(int reservationNumber);
+
+        Task<List<Reservation>> GetRestaurantReservationsForPeriodAsync(int restaurantId, DateTime startDate, DateTime endDate);
+
+        Task<List<Reservation>> GetRestaurantReservationsForDayAsync(int restaurantId, DateTime date);
+
+
 
 
     }

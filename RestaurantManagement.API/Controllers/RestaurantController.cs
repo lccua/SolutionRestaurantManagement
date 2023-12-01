@@ -15,7 +15,6 @@ namespace RestaurantManagement.API.Controllers
     [ApiController]
     public class RestaurantController : ControllerBase
     {
-
         private readonly RestaurantManager _restaurantManager;
         public RestaurantController(RestaurantManager restaurantManager)
         {
@@ -46,9 +45,6 @@ namespace RestaurantManagement.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
-
 
         [HttpGet]
         [Route("Get/")]
@@ -110,8 +106,6 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
-
-
         [HttpPost]
         [Route("Add")]
         public async Task<ActionResult> PostRestaurant(RestaurantInputDTO restaurantInputDTO)
@@ -163,8 +157,27 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("Delete")]
+        public async Task<ActionResult> DeleteRestaurant(int restaurantId)
+        {
+            try
+            {
+                // Check if the customer exists
+                var existingCustomer = await _restaurantManager.GetRestaurantAsync(restaurantId);
+                if (existingCustomer == null)
+                {
+                    return NotFound();
+                }
 
+                await _restaurantManager.DeleteRestaurantAsync(restaurantId);
 
-
+                return NoContent(); // Successful deletion, no content to return
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

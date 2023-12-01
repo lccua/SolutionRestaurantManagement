@@ -84,5 +84,18 @@ namespace RestaurantManagement.DOMAIN.Manager
                 throw;
             }
         }
+
+        public async Task DeleteRestaurantAsync(int restaurantId)
+        {
+            try
+            {
+                await _restaurantRepository.DeleteRestaurantAsync(restaurantId);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
     }
 }

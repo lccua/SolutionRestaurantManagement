@@ -12,7 +12,6 @@ namespace RestaurantManagement.API.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-
         private readonly CustomerManager _customerManager;
         public CustomerController(CustomerManager customerManager)
         {
