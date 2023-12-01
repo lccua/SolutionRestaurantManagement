@@ -56,5 +56,33 @@ namespace RestaurantManagement.DOMAIN.Manager
                 throw;
             }
         }
+
+        public async Task<Restaurant> GetRestaurantAsync(int restaurantId)
+        {
+            try
+            {
+                return await _restaurantRepository.GetRestaurantAsync(restaurantId);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                throw;
+            }
+        }
+
+        public async Task<int> AddRestaurantAsync(Restaurant restaurant)
+        {
+            try
+            {
+                return await _restaurantRepository.AddRestaurantAsync(restaurant);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                throw;
+            }
+        }
     }
 }

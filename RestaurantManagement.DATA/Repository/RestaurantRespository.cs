@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -260,8 +261,168 @@ namespace RestaurantManagement.DATA.Repository
         }
 
 
+        public async Task<Restaurant> GetRestaurantAsync(int restaurantId)
+        {
+            Restaurant restaurant = null;
 
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
 
+                // Begin a transaction using the 'using' statement
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = @"
+                                        SELECT 
+                                            R.RestaurantId,
+                                            R.Name,
+                                            R.CuisineId,
+                                            R.LocationId,
+                                            R.ContactInformationId,
+                                            CI.Email,
+                                            CI.PhoneNumber,
+                                            L.LocationId,
+                                            L.PostalCode,
+                                            L.MunicipalityName,
+                                            L.StreetName,
+                                            L.HouseNumber,
+                                            C.CuisineId,
+                                            C.CuisineType
+                                        FROM 
+                                            Restaurant R
+                                        INNER JOIN 
+                                            ContactInformation CI ON R.ContactInformationId = CI.ContactInformationId
+                                        INNER JOIN 
+                                            Location L ON R.LocationId = L.LocationId
+                                        INNER JOIN 
+                                            Cuisine C ON R.CuisineId = C.CuisineId
+                                        WHERE 
+                                            R.RestaurantId = @RestaurantId";
+
+                        using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@RestaurantId", restaurantId);
+
+                            using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                            {
+                                if (await reader.ReadAsync())
+                                {
+                                    ContactInformation contactInformation = new ContactInformation
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("ContactInformationId")),
+                                        Email = reader.GetString(reader.GetOrdinal("Email")),
+                                        PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                                    };
+
+                                    Location location = new Location
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("LocationId")),
+                                        PostalCode = reader.GetInt32(reader.GetOrdinal("PostalCode")),
+                                        MunicipalityName = reader.GetString(reader.GetOrdinal("MunicipalityName")),
+                                        StreetName = reader.GetString(reader.GetOrdinal("StreetName")),
+                                        HouseNumber = reader.GetString(reader.GetOrdinal("HouseNumber")),
+                                    };
+
+                                    Cuisine cuisine = new Cuisine
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("CuisineId")),
+                                        CuisineType = reader.GetString(reader.GetOrdinal("CuisineType")),
+                                    };
+
+                                    restaurant = new Restaurant
+                                    {
+                                        RestaurantId = reader.GetInt32(reader.GetOrdinal("RestaurantId")),
+                                        Name = reader.GetString(reader.GetOrdinal("Name")),
+                                        ContactInformation = contactInformation,
+                                        Location = location,
+                                        Cuisine = cuisine,
+                                    };
+                                }
+                            }
+                        }
+
+                        // The 'using' statement will automatically commit the transaction if no exceptions occur
+                    }
+                    catch (Exception)
+                    {
+                        // The 'using' statement will automatically roll back the transaction in case of an exception
+                        throw; // Rethrow the exception for handling at a higher level
+                    }
+                }
+            }
+
+            return restaurant;
+        }
+
+        public async Task<int> AddRestaurantAsync(Restaurant restaurant)
+        {
+            try
+            {
+                string insertCuisineSQL = "INSERT INTO Cuisine(CuisineType) OUTPUT INSERTED.CuisineId VALUES(@cuisineType)";
+                string insertLocationSQL = "INSERT INTO Location(PostalCode, MunicipalityName, StreetName, HouseNumber) OUTPUT INSERTED.LocationId VALUES(@postalCode, @municipalityName, @streetName, @houseNumber)";
+                string insertContactInformationSQL = "INSERT INTO ContactInformation(Email, PhoneNumber) OUTPUT INSERTED.ContactInformationId VALUES(@email, @phoneNumber)";
+                string insertRestaurantSQL = "INSERT INTO Restaurant(Name, CuisineId, LocationId, ContactInformationId) OUTPUT INSERTED.RestaurantId VALUES(@name, @cuisineId, @locationId, @contactInformationId)";
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    SqlTransaction transaction = connection.BeginTransaction();
+
+                    try
+                    {
+                        // Insert Cuisine
+                        command.CommandText = insertCuisineSQL;
+                        command.Transaction = transaction;
+                        command.Parameters.AddWithValue("@cuisineType", restaurant.Cuisine.CuisineType);
+                        int cuisineId = (int)await command.ExecuteScalarAsync();
+
+                        // Insert Location
+                        command.CommandText = insertLocationSQL;
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@postalCode", restaurant.Location.PostalCode);
+                        command.Parameters.AddWithValue("@municipalityName", restaurant.Location.MunicipalityName);
+                        command.Parameters.AddWithValue("@streetName", restaurant.Location.StreetName);
+                        command.Parameters.AddWithValue("@houseNumber", restaurant.Location.HouseNumber);
+                        int locationId = (int)await command.ExecuteScalarAsync();
+
+                        // Insert ContactInformation
+                        command.CommandText = insertContactInformationSQL;
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@email", restaurant.ContactInformation.Email);
+                        command.Parameters.AddWithValue("@phoneNumber", restaurant.ContactInformation.PhoneNumber);
+                        int contactInformationId = (int)await command.ExecuteScalarAsync();
+
+                        // Insert Restaurant
+                        command.CommandText = insertRestaurantSQL;
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@name", restaurant.Name);
+                        command.Parameters.AddWithValue("@cuisineId", cuisineId);
+                        command.Parameters.AddWithValue("@locationId", locationId);
+                        command.Parameters.AddWithValue("@contactInformationId", contactInformationId);
+
+                        // Retrieve the newly inserted RestaurantId
+                        int restaurantId = (int)await command.ExecuteScalarAsync();
+
+                        transaction.Commit();
+
+                        // Return the RestaurantId
+                        return restaurantId;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception("Error adding restaurant.", ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error adding restaurant", ex);
+            }
+        }
 
 
     }
