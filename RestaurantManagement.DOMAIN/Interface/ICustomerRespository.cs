@@ -9,7 +9,7 @@ namespace RestaurantManagement.DOMAIN.Interface
 {
     public interface ICustomerRepository
     {
-        Task RegisterCustomerAsync(Customer customer);
+        Task<int> RegisterCustomerAsync(Customer customer);
         Task DeleteCustomerAsync(int customerId);
         Task<Customer> GetCustomerAsync(int customerNumber);
         Task<bool> IsValidCustomerAsync(int customerId);

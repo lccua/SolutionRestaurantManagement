@@ -17,11 +17,11 @@ namespace RestaurantManagement.DOMAIN.Manager
             _customerRepository = customerRepository;
         }
 
-        public async Task RegisterCustomerAsync(Customer customer)
+        public async Task<int> RegisterCustomerAsync(Customer customer)
         {
             try
             {
-                await _customerRepository.RegisterCustomerAsync(customer);
+                return await _customerRepository.RegisterCustomerAsync(customer);
             }
             catch (System.Exception ex)
             {

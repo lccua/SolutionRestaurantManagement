@@ -18,13 +18,13 @@ namespace RestaurantManagement.DATA.Repository
             _connectionString = connectionString;
         }
 
-        public async Task RegisterCustomerAsync(Customer customer)
+        public async Task<int> RegisterCustomerAsync(Customer customer)
         {
             try
             {
                 string insertContactInformationSQL = "INSERT INTO ContactInformation(Email, PhoneNumber) OUTPUT INSERTED.ContactInformationId VALUES(@email, @phoneNumber)";
                 string insertLocationSQL = "INSERT INTO Location(PostalCode, MunicipalityName, StreetName, HouseNumber) OUTPUT INSERTED.LocationId VALUES(@postalCode, @municipalityName, @streetName, @houseNumber)";
-                string insertCustomerSQL = "INSERT INTO Customer(Name, ContactId, LocationId) VALUES(@name, @contactId, @locationId)";
+                string insertCustomerSQL = "INSERT INTO Customer(Name, ContactInformationId, LocationId) OUTPUT INSERTED.CustomerNumber VALUES(@name, @contactInformationId, @locationId)";
 
                 using (SqlConnection conn = new SqlConnection(_connectionString))
                 using (SqlCommand cmd = conn.CreateCommand())
@@ -53,12 +53,16 @@ namespace RestaurantManagement.DATA.Repository
                         cmd.CommandText = insertCustomerSQL;
                         cmd.Parameters.Clear();
                         cmd.Parameters.AddWithValue("@name", customer.Name);
-                        cmd.Parameters.AddWithValue("@contactId", contactId);
+                        cmd.Parameters.AddWithValue("@contactInformationId", contactId);
                         cmd.Parameters.AddWithValue("@locationId", locationId);
 
-                        await cmd.ExecuteNonQueryAsync();
+                        // Retrieve the newly inserted CustomerId
+                        int customerId = (int)await cmd.ExecuteScalarAsync();
 
                         transaction.Commit();
+
+                        // Return the CustomerId
+                        return customerId;
                     }
                     catch (Exception ex)
                     {
@@ -69,9 +73,10 @@ namespace RestaurantManagement.DATA.Repository
             }
             catch (Exception ex)
             {
-                throw new Exception("error registering customer", ex);
+                throw new Exception("Error registering customer", ex);
             }
         }
+
 
         public async Task DeleteCustomerAsync(int customerNumber)
         {
@@ -100,13 +105,21 @@ namespace RestaurantManagement.DATA.Repository
                     string query = @"
                                     SELECT 
                                         c.CustomerNumber,
+                                        c.Name,
                                         ci.ContactInformationId,
-                                        l.LocationId
+                                        ci.Email,
+                                        ci.PhoneNumber,
+                                        l.LocationId,
+                                        l.PostalCode,
+                                        l.MunicipalityName,
+                                        l.StreetName,
+                                        l.HouseNumber
                                     FROM Customer c
                                     JOIN ContactInformation ci ON c.ContactInformationId = ci.ContactInformationId
                                     JOIN Location l ON c.LocationId = l.LocationId
                                     WHERE c.CustomerNumber = @CustomerNumber
                                         AND c.IsActive = 1";
+
 
 
 
@@ -120,26 +133,33 @@ namespace RestaurantManagement.DATA.Repository
                             {
                                 Customer customer = new Customer
                                 {
-                                    CustomerNumber = (int)reader["CustomerNumber"]
+                                    CustomerNumber = (int)reader["CustomerNumber"],
+                                    Name = reader["Name"].ToString(), // Assuming "Name" is a string field in your database
                                 };
 
                                 Location location = new Location
                                 {
-                                    Id = (int)reader["LocationId"]
+                                    Id = (int)reader["LocationId"],
+                                    PostalCode = (int)reader["PostalCode"],
+                                    MunicipalityName = reader["MunicipalityName"].ToString(),
+                                    StreetName = reader["StreetName"].ToString(),
+                                    HouseNumber = reader["HouseNumber"].ToString(),
                                 };
 
                                 ContactInformation contactInformation = new ContactInformation
                                 {
-                                    Id = (int)reader["ContactInformationId"]
+                                    Id = (int)reader["ContactInformationId"],
+                                    Email = reader["Email"].ToString(),
+                                    PhoneNumber = reader["PhoneNumber"].ToString(),
                                 };
 
                                 // Assuming there are properties in the Customer class for Location and ContactInformation
                                 customer.Location = location;
                                 customer.ContactInformation = contactInformation;
 
-
                                 return customer; // Return the created Customer object
                             }
+
                         }
                     }
                 }

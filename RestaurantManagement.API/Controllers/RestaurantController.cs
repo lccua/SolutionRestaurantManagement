@@ -7,6 +7,7 @@ using RestaurantManagement.API.DTO;
 using RestaurantManagement.DATA.Repository;
 using RestaurantManagement.API.Mapper;
 using RestaurantManagement.API.DTO.Restaurant;
+using RestaurantManagement.API.DTO.Customer;
 
 namespace RestaurantManagement.API.Controllers
 {
@@ -108,6 +109,61 @@ namespace RestaurantManagement.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+
+        [HttpPost]
+        [Route("Add")]
+        public async Task<ActionResult> PostRestaurant(RestaurantInputDTO restaurantInputDTO)
+        {
+            try
+            {
+                // Map CustomerDTO to Customer
+                Restaurant restaurant = RestaurantMapper.ToRestaurantDTO(restaurantInputDTO);
+
+                int restaurantId = await _restaurantManager.AddRestaurantAsync(restaurant);
+
+
+                Restaurant restaurantOutputDTO = RestaurantMapper.ToRestaurantDTO(restaurantInputDTO);
+
+                
+
+
+                return CreatedAtAction(nameof(GetRestaurant), new { restaurantId }, restaurantOutputDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("Get/{restaurantId}")]
+        public async Task<ActionResult> GetRestaurant(int restaurantId)
+        {
+            try
+            {
+                // Retrieve the customer based on customerNumber
+                Restaurant restaurant = await _restaurantManager.GetRestaurantAsync(restaurantId);
+
+                if (restaurant == null)
+                {
+                    return NotFound(); // Customer not found
+                }
+
+                // Map the customer to a DTO for the response
+                RestaurantOutputDTO restaurantOutputDTO = RestaurantMapper.FromRestaurant(restaurant);
+
+                return Ok(restaurantOutputDTO);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
 
     }

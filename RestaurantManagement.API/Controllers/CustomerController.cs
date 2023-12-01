@@ -28,11 +28,11 @@ namespace RestaurantManagement.API.Controllers
                 // Map CustomerDTO to Customer
                 Customer customer = CustomerMapper.ToCustomerDTO(customerInputDTO);
 
-                await _customerManager.RegisterCustomerAsync(customer);
+                int customerNumber = await _customerManager.RegisterCustomerAsync(customer);
 
                 CustomerOutputDTO customerOutputDTO = CustomerMapper.FromCustomer(customer);
 
-                return CreatedAtAction(nameof(PostCustomer), customerOutputDTO);
+                return CreatedAtAction(nameof(GetCustomer), new { customerNumber }, customerOutputDTO);
             }
             catch (Exception ex)
             {
@@ -41,7 +41,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpDelete("Delete")]
-        public async Task<ActionResult> DeleteCustomer(int customerNumber)
+        public async Task<IActionResult> DeleteCustomer(int customerNumber)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<ActionResult> PutCustomerAsync(int customerNumber, [FromBody] CustomerInputDTO customerInputDTO)
+        public async Task<ActionResult> PutCustomer(int customerNumber, [FromBody] CustomerInputDTO customerInputDTO)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpGet("Get/{customerNumber}")]
-        public async Task<ActionResult> GetCustomerAsync(int customerNumber)
+        public async Task<IActionResult> GetCustomer(int customerNumber)
         {
             try
             {
