@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RestaurantManagement.API.DTO;
-using RestaurantManagement.API.DTO.Customer;
 using RestaurantManagement.API.DTO.Reservation;
+using RestaurantManagement.API.DTO.Restaurant;
 using RestaurantManagement.API.Mapper;
 using RestaurantManagement.DOMAIN.Manager;
 using RestaurantManagement.DOMAIN.Model;
@@ -12,67 +11,35 @@ namespace RestaurantManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReservationController : ControllerBase
+    public class AdminController : ControllerBase
     {
+        private readonly CustomerManager _customerManager;
+        private readonly RestaurantManager _restaurantManager;
         private readonly ReservationManager _reservationManager;
-        public ReservationController(ReservationManager reservationManager)
+        public AdminController(CustomerManager customerManager, RestaurantManager restaurantManager, ReservationManager reservationManager)
         {
+            _customerManager = customerManager;
+            _restaurantManager = restaurantManager;
             _reservationManager = reservationManager;
         }
 
         [HttpPost]
-        [Route("Add")]
-        public async Task<ActionResult> PostReservation(ReservationInputDTO reservationInputDTO)
+        public async Task<ActionResult> PostRestaurant(RestaurantInputDTO restaurantInputDTO)
         {
             try
             {
+                // Map CustomerDTO to Customer
+                Restaurant restaurant = RestaurantMapper.ToRestaurantDTO(restaurantInputDTO);
+
+                int restaurantId = await _restaurantManager.AddRestaurantAsync(restaurant);
 
 
-                // Map ReservationDTO to Reservation
-                Reservation reservation = ReservationMapper.ToReservationDTO(reservationInputDTO);
+                Restaurant restaurantOutputDTO = RestaurantMapper.ToRestaurantDTO(restaurantInputDTO);
 
-                await _reservationManager.AddReservationAsync(reservation);
 
-                ReservationOutputDTO reservationOutputDTO = ReservationMapper.FromReservation(reservation);
 
-                return CreatedAtAction(nameof(PostReservation), reservationOutputDTO);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
 
-        [HttpPut]
-        [Route("Update")]
-        public async Task<ActionResult> PutReservation(int reservationNumber,  ReservationUpdateDTO reservationUpdateDTO)
-        {
-            try
-            {
-                Reservation reservation = ReservationMapper.ToReservationDTO(reservationUpdateDTO);
-                
-                // Call the repository method to update the customer
-                await _reservationManager.UpdateReservationAsync(reservationNumber,reservation);
-
-                ReservationOutputDTO reservationOutput = ReservationMapper.FromReservation(reservation);
-
-                return Ok(reservationOutput);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete]
-        [Route("Cancel")]
-        public async Task<ActionResult> DeleteReservation(int reservationNumber)
-        {
-            try
-            {
-                await _reservationManager.CancelReservationAsync(reservationNumber);
-
-                return NoContent();
+                return CreatedAtAction(nameof(GetRestaurant), new { restaurantId }, restaurantOutputDTO);
             }
             catch (Exception ex)
             {
@@ -81,30 +48,23 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpGet]
-        [Route("Customer/GetByPeriod")]
-        public async Task<ActionResult> GetCustomerReservationsByPeriod(int customerNumber, string startDate, string endDate)
+        [Route("{restaurantId}")]
+        public async Task<ActionResult> GetRestaurant(int restaurantId)
         {
             try
             {
-                List<ReservationOutputDTO> reservationOutputDTOs = new List<ReservationOutputDTO>();
-                DateTime parsedStartDate = Parser.ParseDate(startDate);
-                DateTime parsedEndDate = Parser.ParseDate(endDate);
+                // Retrieve the customer based on customerNumber
+                Restaurant restaurant = await _restaurantManager.GetRestaurantAsync(restaurantId);
 
-                List<Reservation> reservations = await _reservationManager.GetReservationsAsync(customerNumber, parsedStartDate, parsedEndDate);
-
-                if (reservations.Count == 0)
+                if (restaurant == null)
                 {
                     return NotFound(); // Customer not found
                 }
 
-                foreach (Reservation reservation in reservations)
-                {
-                    ReservationOutputDTO reservationOutputDTO = ReservationMapper.FromReservation(reservation);
-                    reservationOutputDTOs.Add(reservationOutputDTO);
-                }
+                // Map the customer to a DTO for the response
+                RestaurantOutputDTO restaurantOutputDTO = RestaurantMapper.FromRestaurant(restaurant);
 
-
-                return Ok(reservationOutputDTOs);
+                return Ok(restaurantOutputDTO);
             }
             catch (Exception ex)
             {
@@ -113,8 +73,33 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("{restaurantId}")]
+        public async Task<ActionResult> DeleteRestaurant(int restaurantId)
+        {
+            try
+            {
+                // Check if the customer exists
+                var existingCustomer = await _restaurantManager.GetRestaurantAsync(restaurantId);
+                if (existingCustomer == null)
+                {
+                    return NotFound();
+                }
+
+                await _restaurantManager.DeleteRestaurantAsync(restaurantId);
+
+                return NoContent(); // Successful deletion, no content to return
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
         [HttpGet]
-        [Route("Restaurant/GetByPeriod")]
+        [Route("Restaurant")]
         public async Task<ActionResult> GetRestaurantReservationsForPeriod(int restaurantId, string startDate, string endDate)
         {
             try
