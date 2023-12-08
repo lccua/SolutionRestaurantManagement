@@ -540,6 +540,30 @@ namespace RestaurantManagement.DATA.Repository
             }
         }
 
+        public async Task<bool> IsValidRestaurantAsync(int restaurantId)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string sql = @"
+                            SELECT count(*)
+                            FROM Restaurant
+                            WHERE RestaurantId = @RestaurantId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@RestaurantId", restaurantId);
+
+                    var result = await command.ExecuteScalarAsync();
+
+                    if ((int)result == 0) { return false; }
+                    else { return true; }
+                }
+            }
+        }
+
+
 
     }
 }

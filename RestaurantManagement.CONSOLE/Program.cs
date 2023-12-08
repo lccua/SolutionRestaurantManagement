@@ -1,5 +1,5 @@
-﻿using RestaurantManagement.CONSOLE.Model.Admin;
-using RestaurantManagement.CONSOLE.Model.Customer;
+﻿using RestaurantManagement.CONSOLE.Model.Input;
+using RestaurantManagement.CONSOLE.Model.Output;
 using RestaurantManagement.CONSOLE.Service;
 using System;
 
@@ -7,8 +7,7 @@ namespace RestaurantManagement.CONSOLE
 {
     internal class Program
     {
-  
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             int input;
             do
@@ -19,11 +18,11 @@ namespace RestaurantManagement.CONSOLE
                 switch (input)
                 {
                     case 1:
-                        GetRestaurantReservationsByDayAsync();
+                        await GetRestaurantReservationsByDayAsync();
                         break;
 
                     case 2:
-                        Post();
+                        await Post(); // Assuming Post is also an async method
                         break;
 
                     case 0:
@@ -38,7 +37,7 @@ namespace RestaurantManagement.CONSOLE
             } while (input != 0);
         }
 
-        private async static void GetRestaurantReservationsByDayAsync()
+        private async static Task GetRestaurantReservationsByDayAsync()
         {
             AdminServiceClient adminService = new AdminServiceClient();
 
@@ -63,7 +62,7 @@ namespace RestaurantManagement.CONSOLE
 
         }
 
-        private async static void Post()
+        private async static Task Post()
         {
             CustomerServiceClient customerService = new CustomerServiceClient();
 

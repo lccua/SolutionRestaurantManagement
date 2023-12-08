@@ -411,7 +411,7 @@ namespace RestaurantManagement.DATA.Repository
                                     INNER JOIN Location cloc ON cus.LocationId = cloc.LocationId
                                     INNER JOIN ContactInformation ccont ON cus.ContactInformationId = ccont.ContactInformationId
                                     WHERE r.RestaurantId = @RestaurantId
-                                          AND WHERE r.ReservationDate = @Date";
+                                          AND r.ReservationDate = @Date";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {

@@ -1,4 +1,4 @@
-﻿using RestaurantManagement.CONSOLE.Model.Admin;
+﻿using RestaurantManagement.CONSOLE.Model.Output;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,21 +16,22 @@ namespace RestaurantManagement.CONSOLE.Service
         static AdminServiceClient()
         {
             // Set the base address and default headers only once
-            client.BaseAddress = new Uri("http://localhost:7229/");
+            client.BaseAddress = new Uri("https://localhost:7229/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         public async Task<List<ReservationOutputUI>> GetRestaurantReservationsByDayAsync(int restaurantId, string date)
         {
-            try
+            try 
             {
-                string path = $"api/RestaurantManagement/Restaurant/{restaurantId}/GetReservationsByDay/{date}"; // Construct the path using the provided ID
+                string path = $"api/Admin/Restaurant/{restaurantId}/Reservations/Day?date={date}";
+
                 HttpResponseMessage response = await client.GetAsync(path);
 
                 var responseContent = response.Content.ReadAsStringAsync().Result;
 
-                Console.WriteLine("RESULT GetRestaurantReservationsByDayAsync");
+        
                 Console.WriteLine(responseContent);
 
                 List<ReservationOutputUI> restaurantReservationResponse = null;

@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.CONSOLE.Model.Customer;
+﻿using RestaurantManagement.CONSOLE.Model.Input;
+using RestaurantManagement.CONSOLE.Model.Output;
 using System;
 using System.Collections.Generic;
 using System.Linq;

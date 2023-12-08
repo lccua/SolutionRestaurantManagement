@@ -213,7 +213,7 @@ namespace RestaurantManagement.TEST
         public async Task DeleteCustomer_NonExistingCustomer_ReturnsNotFound()
         {
             // Arrange
-            int customerNumber = 1;
+            int customerNumber = 9000;
             customerMockRepo.Setup(repo => repo.IsValidCustomerAsync(customerNumber))
                 .ReturnsAsync(false);
 
@@ -223,10 +223,6 @@ namespace RestaurantManagement.TEST
             // Assert
             Assert.IsType<NotFoundResult>(result);
         }
-
-
-
-
 
         [Fact]
         public async Task PutCustomer_NonExistingCustomer_ReturnsNotFound()
@@ -293,7 +289,6 @@ namespace RestaurantManagement.TEST
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
         }
-
 
         #endregion
     }

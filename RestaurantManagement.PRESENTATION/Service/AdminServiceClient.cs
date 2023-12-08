@@ -24,11 +24,11 @@ namespace RestaurantManagement.PRESENTATION.Service
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<List<ReservationOutputUI>> GetRestaurantReservationsByDay(int reeksId, string date)
+        public async Task<List<ReservationOutputUI>> GetRestaurantReservationsByDay(int id, string date)
         {
             try
             {
-                string path = $"api/RestaurantManagement/Restaurant/GetByDay/{date}"; // Construct the path using the provided ID
+                string path = $"api/RestaurantManagement/Restaurant/{id}/ByDay"; // Construct the path using the provided ID
                 HttpResponseMessage response = await client.GetAsync(path);
 
                 var responseContent = response.Content.ReadAsStringAsync().Result;
@@ -36,14 +36,14 @@ namespace RestaurantManagement.PRESENTATION.Service
                 Console.WriteLine("RESULT CreateAuteurAsync");
                 Console.WriteLine(responseContent);
 
-                ReservationOutputUI reeksResponse = null;
+                ReservationOutputUI reservationResponse = null;
 
                 if (response.IsSuccessStatusCode)
                 {
-                    reeksResponse = JsonSerializer.Deserialize<ReservationOutputUI>(responseContent);
+                    reservationResponse = JsonSerializer.Deserialize<ReservationOutputUI>(responseContent);
                 }
 
-                return reeksResponse;
+                return reservationResponse;
             }
             catch (Exception ex)
             {

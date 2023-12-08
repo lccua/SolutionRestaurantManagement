@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantManagement.CONSOLE.Model.Customer
+namespace RestaurantManagement.CONSOLE.Model.Output
 {
-    public class CustomerOutputUI
+    public class CuisineOutputUI
     {
-
     }
 }

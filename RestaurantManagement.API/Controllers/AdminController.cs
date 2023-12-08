@@ -13,12 +13,10 @@ namespace RestaurantManagement.API.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly CustomerManager _customerManager;
         private readonly RestaurantManager _restaurantManager;
         private readonly ReservationManager _reservationManager;
-        public AdminController(CustomerManager customerManager, RestaurantManager restaurantManager, ReservationManager reservationManager)
+        public AdminController(RestaurantManager restaurantManager, ReservationManager reservationManager)
         {
-            _customerManager = customerManager;
             _restaurantManager = restaurantManager;
             _reservationManager = reservationManager;
         }
@@ -33,11 +31,7 @@ namespace RestaurantManagement.API.Controllers
 
                 int restaurantId = await _restaurantManager.AddRestaurantAsync(restaurant);
 
-
                 Restaurant restaurantOutputDTO = RestaurantMapper.ToRestaurantDTO(restaurantInputDTO);
-
-
-
 
                 return CreatedAtAction(nameof(GetRestaurant), new { restaurantId }, restaurantOutputDTO);
             }
@@ -80,8 +74,8 @@ namespace RestaurantManagement.API.Controllers
             try
             {
                 // Check if the customer exists
-                var existingCustomer = await _restaurantManager.GetRestaurantAsync(restaurantId);
-                if (existingCustomer == null)
+                bool isValidRestaurant = await _restaurantManager.IsValidRestaurantAsync(restaurantId);
+                if (isValidRestaurant == false)
                 {
                     return NotFound();
                 }
@@ -96,10 +90,8 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
-
-
         [HttpGet]
-        [Route("Restaurant")]
+        [Route("Restaurant/{restaurantId}/Reservations/Period")]
         public async Task<ActionResult> GetRestaurantReservationsForPeriod(int restaurantId, string startDate, string endDate)
         {
             try
@@ -132,7 +124,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpGet]
-        [Route("Restaurant/GetByDay")]
+        [Route("Restaurant/{restaurantId}/Reservations/Day")]
         public async Task<ActionResult> GetRestaurantReservationsForDay(int restaurantId, string date)
         {
             try

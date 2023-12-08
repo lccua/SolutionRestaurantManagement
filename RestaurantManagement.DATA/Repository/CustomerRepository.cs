@@ -77,7 +77,6 @@ namespace RestaurantManagement.DATA.Repository
             }
         }
 
-
         public async Task DeleteCustomerAsync(int customerNumber)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -287,6 +286,5 @@ namespace RestaurantManagement.DATA.Repository
                 }
             }
         }
-
     }
 }
