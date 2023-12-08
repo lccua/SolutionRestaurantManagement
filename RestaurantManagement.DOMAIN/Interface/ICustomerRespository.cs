@@ -13,6 +13,6 @@ namespace RestaurantManagement.DOMAIN.Interface
         Task DeleteCustomerAsync(int customerId);
         Task<Customer> GetCustomerAsync(int customerNumber);
         Task<bool> IsValidCustomerAsync(int customerId);
-        Task UpdateCustomerAsync(Customer customer);
+        Task UpdateCustomerAsync(int customerNumber,Customer customer);
     }
 }

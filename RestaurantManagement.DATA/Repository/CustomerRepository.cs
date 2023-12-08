@@ -174,7 +174,7 @@ namespace RestaurantManagement.DATA.Repository
             return null; // Customer not found or an error occurred
         }
 
-        public async Task UpdateCustomerAsync(Customer updatedCustomer)
+        public async Task UpdateCustomerAsync(int customerNumber,Customer updatedCustomer)
         {
             try
             {
@@ -192,13 +192,13 @@ namespace RestaurantManagement.DATA.Repository
                                                         SET 
                                                             Email = @Email,
                                                             PhoneNumber = @PhoneNumber
-                                                        WHERE ContactInformationId = @ContactInformationId";
+                                                         WHERE ContactInformationId=(SELECT ContactInformationId from Customer where CustomerNumber=@CustomerNumber)";
 
                             using (SqlCommand contactCommand = new SqlCommand(updateContactQuery, connection, transaction))
                             {
                                 contactCommand.Parameters.AddWithValue("@Email", updatedCustomer.ContactInformation.Email);
                                 contactCommand.Parameters.AddWithValue("@PhoneNumber", updatedCustomer.ContactInformation.PhoneNumber);
-                                contactCommand.Parameters.AddWithValue("@ContactInformationId", updatedCustomer.ContactInformation.Id);
+                                contactCommand.Parameters.AddWithValue("@CustomerNumber", customerNumber);
 
 
                                 await contactCommand.ExecuteNonQueryAsync();
@@ -212,7 +212,7 @@ namespace RestaurantManagement.DATA.Repository
                                                              MunicipalityName = @MunicipalityName,
                                                              StreetName = @StreetName,
                                                              HouseNumber = @HouseNumber
-                                                         WHERE LocationId = @LocationId";
+                                                         WHERE LocationId=(SELECT LocationId from Customer where CustomerNumber=@CustomerNumber)";
 
                             using (SqlCommand locationCommand = new SqlCommand(updateLocationQuery, connection, transaction))
                             {
@@ -220,7 +220,7 @@ namespace RestaurantManagement.DATA.Repository
                                 locationCommand.Parameters.AddWithValue("@MunicipalityName", updatedCustomer.Location.MunicipalityName);
                                 locationCommand.Parameters.AddWithValue("@StreetName", updatedCustomer.Location.StreetName);
                                 locationCommand.Parameters.AddWithValue("@HouseNumber", updatedCustomer.Location.HouseNumber);
-                                locationCommand.Parameters.AddWithValue("@LocationId", updatedCustomer.Location.Id);
+                                locationCommand.Parameters.AddWithValue("@CustomerNumber", customerNumber);
 
 
 
@@ -240,9 +240,6 @@ namespace RestaurantManagement.DATA.Repository
                             using (SqlCommand customerCommand = new SqlCommand(updateCustomerQuery, connection, transaction))
                             {
                                 customerCommand.Parameters.AddWithValue("@Name", updatedCustomer.Name);
-                                customerCommand.Parameters.AddWithValue("@ContactInformationId", updatedCustomer.ContactInformation.Id);
-                                customerCommand.Parameters.AddWithValue("@LocationId", updatedCustomer.Location.Id);
-                                customerCommand.Parameters.AddWithValue("@CustomerNumber", updatedCustomer.CustomerNumber);
 
                                 await customerCommand.ExecuteNonQueryAsync();
                             }
@@ -275,7 +272,7 @@ namespace RestaurantManagement.DATA.Repository
                 await connection.OpenAsync();
 
                 string sql = @"
-                            SELECT 1
+                            SELECT count(*)
                             FROM Customer
                             WHERE CustomerNumber = @CustomerNumber";
 
@@ -284,7 +281,9 @@ namespace RestaurantManagement.DATA.Repository
                     command.Parameters.AddWithValue("@CustomerNumber", customerId);
 
                     var result = await command.ExecuteScalarAsync();
-                    return result != null && (int)result == 1;
+
+                    if ((int)result == 0) { return false; }
+                    else { return true; }
                 }
             }
         }

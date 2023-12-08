@@ -56,11 +56,11 @@ namespace RestaurantManagement.DOMAIN.Manager
             }
         }
 
-        public async Task UpdateCustomerAsync(Customer customer)
+        public async Task UpdateCustomerAsync(int customerNumber, Customer customer)
         {
             try
             {
-                await _customerRepository.UpdateCustomerAsync(customer);
+                await _customerRepository.UpdateCustomerAsync(customerNumber, customer);
             }
             catch (System.Exception ex)
             {

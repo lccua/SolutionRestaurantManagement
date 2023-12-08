@@ -26,6 +26,8 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpPost]
+        [Route("Customer")]
+
         public async Task<ActionResult> PostCustomer([FromBody] CustomerInputDTO customerInputDTO)
         {
             try
@@ -51,8 +53,8 @@ namespace RestaurantManagement.API.Controllers
             try
             {
                 // Check if the customer exists
-                var existingCustomer = await _customerManager.GetCustomerAsync(customerNumber);
-                if (existingCustomer == null)
+                bool customerIsValid = await _customerManager.IsValidCustomerAsync(customerNumber);
+                if (customerIsValid == false)
                 {
                     return NotFound();
                 }
@@ -73,22 +75,19 @@ namespace RestaurantManagement.API.Controllers
             try
             {
                 // Retrieve the customer based on customerNumber
-                Customer existingCustomer = await _customerManager.GetCustomerAsync(customerNumber);
+                bool isValidCustomer = await _customerManager.IsValidCustomerAsync(customerNumber);
 
-                if (existingCustomer == null)
+                if (isValidCustomer == false)
                 {
                     return NotFound(); // Customer not found
                 }
 
                 Customer customer = CustomerMapper.ToCustomerDTO(customerInputDTO);
-                customer.ContactInformation.Id = existingCustomer.ContactInformation.Id;
-                customer.CustomerNumber = customerNumber;
-                customer.Location.Id = existingCustomer.Location.Id;
-
+              
 
 
                 // Call the repository method to update the customer
-                await _customerManager.UpdateCustomerAsync(customer);
+                await _customerManager.UpdateCustomerAsync(customerNumber, customer);
 
 
                 return Ok(customerInputDTO);
@@ -211,7 +210,8 @@ namespace RestaurantManagement.API.Controllers
 
 
         [HttpPost]
-        [Route("Add")]
+        [Route("Reservation")]
+
         public async Task<ActionResult> PostReservation(ReservationInputDTO reservationInputDTO)
         {
             try
@@ -234,7 +234,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpPut]
-        [Route("Update")]
+        [Route("{reservationNumber}")]
         public async Task<ActionResult> PutReservation(int reservationNumber, ReservationUpdateDTO reservationUpdateDTO)
         {
             try
@@ -255,7 +255,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpDelete]
-        [Route("Cancel")]
+        [Route("{reservationNumber}")]
         public async Task<ActionResult> DeleteReservation(int reservationNumber)
         {
             try
