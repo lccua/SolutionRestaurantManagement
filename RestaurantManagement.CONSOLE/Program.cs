@@ -12,9 +12,9 @@ namespace RestaurantManagement.CONSOLE
             int input;
             do
             {
+                Console.WriteLine("------------------------------------------");
                 Console.WriteLine("Press 1 for GET | Press 2 for POST | Press 0 to EXIT");
                 input = Convert.ToInt32(Console.ReadLine());
-
                 switch (input)
                 {
                     case 1:
@@ -46,18 +46,21 @@ namespace RestaurantManagement.CONSOLE
             Console.WriteLine("GET Restaurant Reservations by ID and DAY");
             Console.WriteLine("------------------------------------------");
 
-            Console.WriteLine("Enter ID:");
+            Console.WriteLine("Enter Restaurant ID:");
             id = Convert.ToInt32(Console.ReadLine());
 
             Console.WriteLine("Enter DAY (ex. yyyy-mm-dd):");
             date = Console.ReadLine();
+
+            Console.WriteLine("------------------------------------------");
+
 
 
             List<ReservationOutputUI> reservationsOutput = await adminService.GetRestaurantReservationsByDayAsync(id,date);
 
             foreach (var restaurantReservation in reservationsOutput)
             {
-                Console.WriteLine(restaurantReservation);
+                Console.WriteLine(restaurantReservation.ToString());
             }
 
         }

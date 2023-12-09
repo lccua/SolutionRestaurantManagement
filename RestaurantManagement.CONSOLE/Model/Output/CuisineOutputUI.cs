@@ -8,5 +8,12 @@ namespace RestaurantManagement.CONSOLE.Model.Output
 {
     public class CuisineOutputUI
     {
+        public int cuisineId { get; set; }
+        public string cuisineType { get; set; }
+
+        public override string ToString()
+        {
+            return $"{cuisineType} (ID: {cuisineId})";
+        }
     }
 }

@@ -31,8 +31,6 @@ namespace RestaurantManagement.CONSOLE.Service
 
                 var responseContent = response.Content.ReadAsStringAsync().Result;
 
-        
-                Console.WriteLine(responseContent);
 
                 List<ReservationOutputUI> restaurantReservationResponse = null;
 
