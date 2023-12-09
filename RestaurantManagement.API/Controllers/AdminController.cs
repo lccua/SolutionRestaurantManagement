@@ -23,10 +23,10 @@ namespace RestaurantManagement.API.Controllers
             _restaurantManager = restaurantManager;
             _reservationManager = reservationManager;
             _logger = logger;
-
         }
 
         [HttpPost]
+        [Route("Restaurant")]
         public async Task<ActionResult> PostRestaurant(RestaurantInputDTO restaurantInputDTO)
         {
             try
@@ -50,7 +50,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpGet]
-        [Route("{restaurantId}")]
+        [Route("Restaurant/{restaurantId}")]
         public async Task<ActionResult> GetRestaurant(int restaurantId)
         {
             try
@@ -76,7 +76,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpDelete]
-        [Route("{restaurantId}")]
+        [Route("Restaurant/{restaurantId}")]
         public async Task<ActionResult> DeleteRestaurant(int restaurantId)
         {
             try
