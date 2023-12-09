@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RestaurantManagement.API.DTO.Reservation;
 using RestaurantManagement.API.DTO.Restaurant;
 using RestaurantManagement.API.Mapper;
@@ -15,10 +16,14 @@ namespace RestaurantManagement.API.Controllers
     {
         private readonly RestaurantManager _restaurantManager;
         private readonly ReservationManager _reservationManager;
-        public AdminController(RestaurantManager restaurantManager, ReservationManager reservationManager)
+        private readonly ILogger<AdminController> _logger;
+
+        public AdminController(RestaurantManager restaurantManager, ReservationManager reservationManager, ILogger<AdminController> logger)
         {
             _restaurantManager = restaurantManager;
             _reservationManager = reservationManager;
+            _logger = logger;
+
         }
 
         [HttpPost]
@@ -26,6 +31,8 @@ namespace RestaurantManagement.API.Controllers
         {
             try
             {
+                _logger.LogInformation("Posting a new restaurant");
+
                 // Map CustomerDTO to Customer
                 Restaurant restaurant = RestaurantMapper.ToRestaurantDTO(restaurantInputDTO);
 
@@ -37,6 +44,7 @@ namespace RestaurantManagement.API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Error in PostRestaurant: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
