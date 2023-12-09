@@ -26,7 +26,6 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpPost]
-        [Route("Customer")]
         public async Task<ActionResult> PostCustomer([FromBody] CustomerInputDTO customerInputDTO)
         {
             try

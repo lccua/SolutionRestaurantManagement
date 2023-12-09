@@ -19,21 +19,17 @@ namespace RestaurantManagement.CONSOLE.Service
         static CustomerServiceClient()
         {
             // Set the base address and default headers only once
-            client.BaseAddress = new Uri("http://localhost:7229/");
+            client.BaseAddress = new Uri("https://localhost:7229/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         public async Task<Uri> AddCustomerAysnc(CustomerInputUI customer)
         {
-            HttpResponseMessage response = await client.PostAsJsonAsync("api/Auteur", customer);
 
-            var responseContent = response.Content.ReadAsStringAsync().Result;
+            string path = $"api/Customer";
 
-            Console.WriteLine("RESULT CreateAuteurAsync");
-            Console.WriteLine(responseContent);
-
-            CustomerOutputUI postResponse = JsonSerializer.Deserialize<CustomerOutputUI>(responseContent);
+            HttpResponseMessage response = await client.PostAsJsonAsync(path, customer);
 
             response.EnsureSuccessStatusCode();
             return response.Headers.Location;

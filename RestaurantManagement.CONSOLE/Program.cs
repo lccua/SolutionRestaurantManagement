@@ -22,7 +22,7 @@ namespace RestaurantManagement.CONSOLE
                         break;
 
                     case 2:
-                        await Post(); // Assuming Post is also an async method
+                        await PostCustomer(); // Assuming Post is also an async method
                         break;
 
                     case 0:
@@ -65,7 +65,7 @@ namespace RestaurantManagement.CONSOLE
 
         }
 
-        private async static Task Post()
+        private async static Task PostCustomer()
         {
             CustomerServiceClient customerService = new CustomerServiceClient();
 
@@ -118,8 +118,8 @@ namespace RestaurantManagement.CONSOLE
 
             Uri uri = await customerService.AddCustomerAysnc(customerInput);
 
-            Console.WriteLine(uri);
-
+            Console.WriteLine();
+            Console.WriteLine("LOCATION: " + uri);
 
         }
     }
