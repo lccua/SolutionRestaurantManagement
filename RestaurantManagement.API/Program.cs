@@ -1,6 +1,9 @@
 using RestaurantManagement.DOMAIN.Manager;
 using RestaurantManagement.DATA.Repository;
 using RestaurantManagement.DOMAIN.Interface;
+using Serilog.Events;
+using Serilog;
+using RestaurantManagement.API.Middleware;
 
 namespace RestaurantManagement.API
 {
@@ -11,6 +14,8 @@ namespace RestaurantManagement.API
             string connectionString = "Data Source=DESKTOP-C2MADIB;Initial Catalog=RestaurantDB;Integrated Security=True;";
 
             var builder = WebApplication.CreateBuilder(args);
+
+          
 
 
             builder.Services.AddSingleton<ICustomerRepository>(c => new CustomerRepository(connectionString));
@@ -30,6 +35,8 @@ namespace RestaurantManagement.API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+
+            app.UseMiddleware<LogURLMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
