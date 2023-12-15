@@ -41,22 +41,20 @@ namespace RestaurantManagement.CONSOLE
         {
             AdminServiceClient adminService = new AdminServiceClient();
 
-            int id;
+            int restaurantId;
             string date;
             Console.WriteLine("GET Restaurant Reservations by ID and DAY");
             Console.WriteLine("------------------------------------------");
 
-            Console.WriteLine("Enter Restaurant ID:");
-            id = Convert.ToInt32(Console.ReadLine());
+            restaurantId = 1;
 
-            Console.WriteLine("Enter DAY (ex. yyyy-mm-dd):");
-            date = Console.ReadLine();
+            date = "2024-11-25";
 
             Console.WriteLine("------------------------------------------");
 
 
 
-            List<ReservationOutputUI> reservationsOutput = await adminService.GetRestaurantReservationsByDayAsync(id,date);
+            List<ReservationOutputUI> reservationsOutput = await adminService.GetRestaurantReservationsByDayAsync(restaurantId, date);
 
             foreach (var restaurantReservation in reservationsOutput)
             {
@@ -80,26 +78,19 @@ namespace RestaurantManagement.CONSOLE
             Console.WriteLine("POST Customer");
             Console.WriteLine("------------------------------------------");
 
-            Console.WriteLine("Enter NAME:");
-            name = Console.ReadLine();
+            name = "Luca Cassier";
 
-            Console.WriteLine("Enter EMAIL:");
-            email = Console.ReadLine();
+            email = "luca@gmail.com";
 
-            Console.WriteLine("Enter PHONENUMBER:");
-            phoneNumber = Console.ReadLine();
+            phoneNumber = "0498531583";
 
-            Console.WriteLine("Enter POSTALCODE:");
-            postalCode = Convert.ToInt32(Console.ReadLine());
+            postalCode = 9940;
 
-            Console.WriteLine("Enter MUNICIPALITY:");
-            municipality = Console.ReadLine();
+            municipality = "Evergem";
 
-            Console.WriteLine("Enter STREETNAME:");
-            streetName = Console.ReadLine();
+            streetName = "Garenstraat";
 
-            Console.WriteLine("Enter HOUSENUMBER:");
-            houseNumber = Console.ReadLine();
+            houseNumber = "4a";
 
             LocationInputUI locationInput = new LocationInputUI();
             locationInput.PostalCode = postalCode;
