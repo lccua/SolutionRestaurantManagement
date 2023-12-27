@@ -19,6 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.UTIL",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestaurantManagement.CONSOLE", "RestaurantManagement.CONSOLE\RestaurantManagement.CONSOLE.csproj", "{5ECFC43C-7B04-4D08-96A2-00C3EB06626B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{ED22EB9D-5F40-4DF5-A2C7-7AAB4B584DCB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Architecture", "Architecture", "{AB7C1C87-2A53-459F-85EF-4B1FE7CDE147}"
+	ProjectSection(SolutionItems) = preProject
+		CodeMap1.dgml = CodeMap1.dgml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +66,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{131F3F6A-D2B6-4BE5-A573-A17263B309D3} = {9EDF255D-CB33-4BC6-89DB-3AE16B55247A}
+		{AB7C1C87-2A53-459F-85EF-4B1FE7CDE147} = {ED22EB9D-5F40-4DF5-A2C7-7AAB4B584DCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC89227B-A652-4D83-A581-30B364507A9B}

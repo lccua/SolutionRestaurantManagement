@@ -155,7 +155,7 @@ namespace RestaurantManagement.TEST
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var updatedCustomerDTO = Assert.IsType<CustomerInputDTO>(okResult.Value);
+            var updatedCustomerDTO = Assert.IsType<CustomerOutputDTO>(okResult.Value);
         }
 
         #endregion

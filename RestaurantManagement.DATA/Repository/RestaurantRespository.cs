@@ -459,9 +459,7 @@ namespace RestaurantManagement.DATA.Repository
                     }
                 }
 
-                // Now you can use existingLocationId, existingContactInformationId, and existingCuisineId as needed
-
-                // Proceed with your update logic here...
+               
 
                 string updateCuisineSQL = "UPDATE Cuisine SET CuisineType = @cuisineType WHERE CuisineId = @cuisineId";
                 string updateLocationSQL = "UPDATE Location SET PostalCode = @postalCode, MunicipalityName = @municipalityName, StreetName = @streetName, HouseNumber = @houseNumber WHERE LocationId = @locationId";
@@ -522,7 +520,6 @@ namespace RestaurantManagement.DATA.Repository
                 throw new Exception("Error updating restaurant", ex);
             }
         }
-
 
         public async Task DeleteRestaurantAsync(int restaurantId)
         {

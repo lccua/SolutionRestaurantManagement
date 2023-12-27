@@ -16,6 +16,7 @@ namespace RestaurantManagement.DOMAIN.Interface
         Task<int> AddRestaurantAsync(Restaurant restaurant); 
         Task DeleteRestaurantAsync(int restaurantId);
         Task<bool> IsValidRestaurantAsync(int restaurantId);
+        Task UpdateRestaurantAsync(int restaurantId, Restaurant restaurant);
 
 
     }

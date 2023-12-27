@@ -25,6 +25,8 @@ namespace RestaurantManagement.API.Controllers
             _reservationManager = reservationManager;
         }
 
+        #region Customer
+
         [HttpPost]
         public async Task<ActionResult> PostCustomer([FromBody] CustomerInputDTO customerInputDTO)
         {
@@ -81,14 +83,16 @@ namespace RestaurantManagement.API.Controllers
                 }
 
                 Customer customer = CustomerMapper.ToCustomerDTO(customerInputDTO);
-              
+
 
 
                 // Call the repository method to update the customer
                 await _customerManager.UpdateCustomerAsync(customerNumber, customer);
 
+                CustomerOutputDTO customerOutput = CustomerMapper.FromCustomer(customer);
 
-                return Ok(customerInputDTO);
+
+                return Ok(customerOutput);
             }
             catch (Exception ex)
             {
@@ -121,9 +125,66 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
+        #endregion
+
+        #region Restaurant
 
         [HttpGet]
-        [Route("Seats")]
+        [Route("Restaurants")]
+        public async Task<ActionResult<List<Restaurant>>> GetRestaurants(int? postalCode, int? cuisineId)
+        {
+            List<RestaurantOutputDTO> restaurantOutputDTOs = new List<RestaurantOutputDTO>();
+            try
+            {
+                List<Restaurant> restaurants = await _restaurantManager.GetRestaurantsAsync(postalCode, cuisineId);
+
+                if (restaurants.Count == 0)
+                {
+                    return NotFound(); // No matching restaurants found
+                }
+
+                foreach (var restaurant in restaurants)
+                {
+                    RestaurantOutputDTO restaurantOutputDTO = RestaurantMapper.FromRestaurant(restaurant);
+                    restaurantOutputDTOs.Add(restaurantOutputDTO);
+                }
+
+                return Ok(restaurantOutputDTOs);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("Restaurant/{restaurantId}/AvailableTables")]
+        public async Task<ActionResult<List<Table>>> GetAvailableTables(string date, string hour, int restaurantId)
+        {
+            try
+            {
+                DateTime reservationDate = Parser.ParseDate(date);
+                TimeSpan reservationHour = Parser.ParseTime(hour);
+
+                // Retrieve the available tables based on the provided parameters
+                List<Table> availableTables = await _restaurantManager.GetAvailableTablesAsync(reservationDate, reservationHour, restaurantId);
+
+                if (availableTables.Count == 0)
+                {
+                    return NotFound(); // No available tables found
+                }
+
+                return Ok(availableTables);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("Restaurant/Seats")]
         public async Task<ActionResult> GetRestaurants(string date, int amountOfSeats, int? postalCode, int? cuisineId)
         {
             List<RestaurantOutputDTO> restaurantOutputDTOs = new List<RestaurantOutputDTO>();
@@ -153,63 +214,12 @@ namespace RestaurantManagement.API.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Restaurant>>> GetRestaurants(int? postalCode, int? cuisineId)
-        {
-            List<RestaurantOutputDTO> restaurantOutputDTOs = new List<RestaurantOutputDTO>();
-            try
-            {
-                List<Restaurant> restaurants = await _restaurantManager.GetRestaurantsAsync(postalCode, cuisineId);
+        #endregion
 
-                if (restaurants.Count == 0)
-                {
-                    return NotFound(); // No matching restaurants found
-                }
-
-                foreach (var restaurant in restaurants)
-                {
-                    RestaurantOutputDTO restaurantOutputDTO = RestaurantMapper.FromRestaurant(restaurant);
-                    restaurantOutputDTOs.Add(restaurantOutputDTO);
-                }
-
-                return Ok(restaurantOutputDTOs);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it appropriately
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("{restaurantId}/AvailableTables")]
-        public async Task<ActionResult<List<Table>>> GetAvailableTables(string date, string hour, int restaurantId)
-        {
-            try
-            {
-                DateTime reservationDate = Parser.ParseDate(date);
-                TimeSpan reservationHour = Parser.ParseTime(hour);
-
-                // Retrieve the available tables based on the provided parameters
-                List<Table> availableTables = await _restaurantManager.GetAvailableTablesAsync(reservationDate, reservationHour, restaurantId);
-
-                if (availableTables.Count == 0)
-                {
-                    return NotFound(); // No available tables found
-                }
-
-                return Ok(availableTables);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it appropriately
-                return BadRequest(ex.Message);
-            }
-        }
-
+        #region Reservation
 
         [HttpPost]
         [Route("Reservation")]
-
         public async Task<ActionResult> PostReservation(ReservationInputDTO reservationInputDTO)
         {
             try
@@ -232,7 +242,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpPut]
-        [Route("{reservationNumber}")]
+        [Route("Reservation/{reservationNumber}")]
         public async Task<ActionResult> PutReservation(int reservationNumber, ReservationUpdateDTO reservationUpdateDTO)
         {
             try
@@ -253,7 +263,7 @@ namespace RestaurantManagement.API.Controllers
         }
 
         [HttpDelete]
-        [Route("{reservationNumber}")]
+        [Route("Reservation/{reservationNumber}")]
         public async Task<ActionResult> DeleteReservation(int reservationNumber)
         {
             try
@@ -300,5 +310,7 @@ namespace RestaurantManagement.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        #endregion
     }
 }

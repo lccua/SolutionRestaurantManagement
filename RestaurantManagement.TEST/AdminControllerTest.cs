@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
+using RestaurantManagement.API.Controllers;
 using RestaurantManagement.API.DTO.ContactInformation;
 using RestaurantManagement.API.DTO.Cuisine;
+using RestaurantManagement.API.DTO.Customer;
 using RestaurantManagement.API.DTO.Location;
 using RestaurantManagement.API.DTO.Reservation;
 using RestaurantManagement.API.DTO.Restaurant;
@@ -79,6 +81,46 @@ namespace RestaurantManagement.TEST
         }
 
         [Fact]
+        public async Task PutRestaurant_ExistingRestaurant_ReturnsOkResult()
+        {
+            // Arrange
+            int restaurantId = 1;
+            restaurantMockRepo.Setup(repo => repo.IsValidRestaurantAsync(restaurantId))
+            .ReturnsAsync(true);
+
+            // Set properties for the update
+            var restaurantInputDTO = new RestaurantInputDTO 
+            {
+                RestaurantName = "Updated Name", // Set the updated name
+
+                CuisineInput = new CuisineInputDTO
+                {
+                    CuisineType = "Chinese" // Add the cuisine type as needed
+                },
+                ContactInformationInput = new ContactInformationInputDTO
+                {
+                    Email = "updated.email@example.com", // Set the updated email
+                    PhoneNumber = "9876543210" // Set the updated phone number
+                },
+                LocationInput = new LocationInputDTO
+                {
+                    PostalCode = 4564, // Set the updated postal code
+                    MunicipalityName = "Updated City",
+                    StreetName = "Updated Street",
+                    HouseNumber = "456B" // Set the updated house number
+                },
+            };
+
+
+            // Act
+            var result = await adminController.PutRestaurant(restaurantId, restaurantInputDTO);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var updatedRestaurantDTO = Assert.IsType<RestaurantOutputDTO>(okResult.Value);
+        }
+
+        [Fact]
         public async Task GetRestaurant_ExistingRestaurant_ReturnsOkResult()
         {
             // Arrange
@@ -140,6 +182,42 @@ namespace RestaurantManagement.TEST
         #region Unhappy Paths
 
         [Fact]
+        public async Task PostRestaurant_InvalidInput_ReturnsBadRequest()
+        {
+            // Arrange
+            var restaurantInputDTO = new RestaurantInputDTO
+            {
+                RestaurantName = null, // Set an invalid value
+                CuisineInput = new CuisineInputDTO
+                {
+                    CuisineType = "Italian" // Add the cuisine type as needed
+                },
+                ContactInformationInput = new ContactInformationInputDTO
+                {
+                    Email = "restaurant@example.com", // Add the email address as needed
+                    PhoneNumber = "1234567890" // Add the phone number as needed
+                },
+                LocationInput = new LocationInputDTO
+                {
+                    PostalCode = 12345, // Add the postal code as needed
+                    MunicipalityName = "City", // Add the city name as needed
+                    StreetName = "Street", // Add the street name as needed
+                    HouseNumber = "123" // Add the house number as needed
+                }
+            };
+
+            restaurantMockRepo.Setup(repo => repo.AddRestaurantAsync(It.IsAny<Restaurant>()))
+              .ThrowsAsync(new Exception("error"));
+
+            // Act
+            var result = await adminController.PostRestaurant(restaurantInputDTO);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Name is empty", badRequestResult.Value);
+        }
+
+        [Fact]
         public async Task GetRestaurant_NonExistingRestaurant_ReturnsNotFound()
         {
             // Arrange
@@ -169,6 +247,83 @@ namespace RestaurantManagement.TEST
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task PutRestaurant_NonExistingRestaurant_ReturnsNotFound()
+        {
+            // Arrange
+            int restaurantId = 9000;
+            restaurantMockRepo.Setup(repo => repo.IsValidRestaurantAsync(restaurantId))
+            .ReturnsAsync(false);
+
+            // Set properties for the update
+            var restaurantInputDTO = new RestaurantInputDTO
+            {
+                RestaurantName = "Updated Name", // Set the updated name
+
+                CuisineInput = new CuisineInputDTO
+                {
+                    CuisineType = "Chinese" // Add the cuisine type as needed
+                },
+                ContactInformationInput = new ContactInformationInputDTO
+                {
+                    Email = "updated.email@example.com", // Set the updated email
+                    PhoneNumber = "9876543210" // Set the updated phone number
+                },
+                LocationInput = new LocationInputDTO
+                {
+                    PostalCode = 4564, // Set the updated postal code
+                    MunicipalityName = "Updated City",
+                    StreetName = "Updated Street",
+                    HouseNumber = "456B" // Set the updated house number
+                },
+            };
+
+            // Act
+            var result = await adminController.PutRestaurant(restaurantId, restaurantInputDTO);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task PutRestaurant_InvalidData_ReturnsBadRequest()
+        {
+            // Arrange
+            int restaurantId = 1;
+            restaurantMockRepo.Setup(repo => repo.IsValidRestaurantAsync(restaurantId))
+            .ReturnsAsync(true);
+
+            // Set properties for the update
+            var restaurantInputDTO = new RestaurantInputDTO
+            {
+                RestaurantName = null, // Set the updated name
+
+                CuisineInput = new CuisineInputDTO
+                {
+                    CuisineType = null, // Add the cuisine type as needed
+                },
+                ContactInformationInput = new ContactInformationInputDTO
+                {
+                    Email = "updated.email@example.com",
+                    PhoneNumber = "invalidPhoneNumber" // Set an invalid phone number
+                },
+
+                LocationInput = new LocationInputDTO
+                {
+                    PostalCode = -1, // Set an invalid postal code (negative)
+                    MunicipalityName = "Updated City",
+                    StreetName = "Updated Street",
+                    HouseNumber = "456B"
+                },
+            };
+
+            // Act
+            var result = await adminController.PutRestaurant(restaurantId, restaurantInputDTO);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
         }
 
         #endregion

@@ -43,14 +43,14 @@ namespace RestaurantManagement.CONSOLE
 
             int restaurantId;
             string date;
-            Console.WriteLine("GET Restaurant Reservations by ID and DAY");
+
+            Console.WriteLine("------------------------------------------");
+            Console.WriteLine("GET RESTAURANT RESERVATIONS by ID and DAY");
             Console.WriteLine("------------------------------------------");
 
             restaurantId = 1;
 
             date = "2024-11-25";
-
-            Console.WriteLine("------------------------------------------");
 
 
 
@@ -60,6 +60,8 @@ namespace RestaurantManagement.CONSOLE
             {
                 Console.WriteLine(restaurantReservation.ToString());
             }
+          
+
 
         }
 
@@ -75,8 +77,10 @@ namespace RestaurantManagement.CONSOLE
             string streetName;
             string houseNumber;
 
-            Console.WriteLine("POST Customer");
             Console.WriteLine("------------------------------------------");
+            Console.WriteLine("POST CUSTOMER");
+            Console.WriteLine("------------------------------------------");
+
 
             name = "Luca Cassier";
 
@@ -109,8 +113,10 @@ namespace RestaurantManagement.CONSOLE
 
             Uri uri = await customerService.AddCustomerAysnc(customerInput);
 
-            Console.WriteLine();
             Console.WriteLine("LOCATION: " + uri);
+            Console.WriteLine();
+
+         
 
         }
     }

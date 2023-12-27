@@ -23,6 +23,8 @@ namespace RestaurantManagement.API.Controllers
             _reservationManager = reservationManager;
         }
 
+        #region Restaurant
+
         [HttpPost]
         [Route("Restaurant")]
         public async Task<ActionResult> PostRestaurant(RestaurantInputDTO restaurantInputDTO)
@@ -39,6 +41,35 @@ namespace RestaurantManagement.API.Controllers
                 Restaurant restaurantOutputDTO = RestaurantMapper.ToRestaurantDTO(restaurantInputDTO);
 
                 return CreatedAtAction(nameof(GetRestaurant), new { restaurantId }, restaurantOutputDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("Restaurant/{restaurantId}")]
+        public async Task<ActionResult> PutRestaurant(int restaurantId, RestaurantInputDTO restaurantInputDTO)
+        {
+            try
+            {
+                // Retrieve the customer based on customerNumber
+                bool isValidRestaurant = await _restaurantManager.IsValidRestaurantAsync(restaurantId);
+
+                if (isValidRestaurant == false)
+                {
+                    return NotFound(); // Customer not found
+                }
+
+                Restaurant restaurant = RestaurantMapper.ToRestaurantDTO(restaurantInputDTO);
+
+                // Call the repository method to update the customer
+                await _restaurantManager.UpdateRestaurantAsync(restaurantId, restaurant);
+
+                RestaurantOutputDTO restaurantOutput = RestaurantMapper.FromRestaurant(restaurant);
+
+                return Ok(restaurantOutput);
             }
             catch (Exception ex)
             {
@@ -160,5 +191,7 @@ namespace RestaurantManagement.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        #endregion
     }
 }
